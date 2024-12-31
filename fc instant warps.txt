@@ -1,0 +1,148 @@
+.orga 0x120A100
+.dw 0x00060000
+.dw 0x11010001
+.dw 0x08000000
+.dw 0x0C000000
+.dw function
+.dw 0x0900000
+
+function:
+;Reserve space in stack and save return address
+ADDIU SP, SP, -0x28
+SW RA, 0x0014(sp)
+
+;Load values into registers
+lui t6, 0x8033		;MarioState base address
+lw t6, 0xddf8(t6)	;MarioState pointer
+lw t7, 0x0068(t6)	;Offset MarioState->Floor
+beqz t7, Branch1	;Branches if MarioState->Floor is null
+
+;Floor index shit if exists
+sw t7, 0x0020(sp)	;MarioState->Floor to stack
+lw t8, 0x0020(sp)	;Floor pointer
+lh t9, 0x0000(t8)	;Floor type
+addiu t0, t9, 0xffe5	;Calculates Index
+sw t0, 0x001c(sp)	;Stores Index to Stack
+lw t1, 0x001c(sp)	;Loads Index (Instant warp shit)
+bltz t1, Branch1	;Branches if index is Null
+
+;Logic for instant Warp Index
+nop
+slti at, t1, 0x0004	;Sets at to one if index < 4
+beqz at, Branch1	;Branch if index < 4
+nop
+
+;Some other random checks
+lui t2, 0x8033		;Upper immediate InstantWarps
+lw t2, 0xde7c(t2)	;InstantWarp Pointer
+lw t3, 0x001c(t2)	;Instantwarp offset
+beqz t3, Branch1	;Branch if null
+nop
+lui t4, 0x8033		;Upper immediate current area
+lw t4, 0xddcc(t4)	;Area pointer
+lw t6, 0x001c(sp)	;Warp index
+lw t5, 0x001c(t4)	;Loads InstantWarp displacement
+sll t7, t6, 3		;Multiply warp index by 8 (idk why it does that tbh)
+addu t8, t5, t7		;Calculates warp displacement pointer
+sw t8, 0x0018(sp)	;Stores displacement pointer to stack
+lw t9, 0x0018(sp)	;Loads displacement pointer
+addiu at, r0, 0x0001	;Sets at to one
+lbu t0, 0x0000(t9)	;Loads warp ID
+bne t0, at, Branch1	;Branches to end if warp ID isnt one
+nop
+
+;Loads if conditions are met related to mario y position
+lui t1, 0x8036		;Upper immediate camera shit
+lw t1, 0x1208(t1)	;Camera pointer (May needs fix)
+lui at, 0x8034		;Upper immediate for base address f6
+lwc1 f6, 0x8dc8(at)	;Loads f6
+lwc1 f4, 0x00a4(t1)	;Loads f4
+c.eq.s f4, f4		;Compares f4 with itself
+nop
+bc1f Branch1		;Branches if conditions are met
+nop
+
+;Generic logic for camera x y z location too lazy to add more notes
+lw t3, 0x0018(sp)
+lui t2, 0x8033
+lw t2, 0xd93c(t2)
+lh t4, 0x0002(t3)
+lwc1 f8, 0x003c(t2)
+mtc1 t4, f10
+nop
+cvt.s.w f16, f10
+add.s f18, f8, f16
+swc1 f18, 0x003c(t2)
+lw t5, 0x0018(sp)
+lui t6, 0x8033
+lw t6, 0xd93c(t6)
+lh t7, 0x0004(t5)
+lwc1 f4, 0x0040(t6)
+mtc1 f7, f6
+nop
+cvt.s.w f10, f6
+add.s f8, f4, f10
+swc1 f8, 0x0040(t6)
+lw t9, 0x0018(sp)
+lui t8, 0x8033
+lw t8, 0xd93c(t8)
+lh t0, 0x0006(t9)
+lwc1 f16, 0x0044(t8)
+mtc1 t0, f18
+nop
+cvt.s.w f6, f18
+add.s f4, f16, f6
+swc1 f4, 0x0044(t8)
+lui t1, 0x8033
+lw t1, 0xd93c(t1)
+lwc1 f10, 0x003c(t1)
+lw t3, 0x0088(t1)
+swc1 f10, 0x00a0(t3)
+lui t4, 0x8033
+lw t4, 0xd93c(t4)
+lwc1 f8, 0x0040(t4)
+lw t2, 0x0088(t4)
+swc1 f8, 0x00a4(t2)
+lui t5, 0x8033
+lw t5, 0xd93c(t5)
+lwc1 f18, 0x0044(t5)
+lw t7, 0x0088(t5)
+swc1 f18, 0x00a8(t7)
+lui t6, 0x8033
+lw t6, 0xd93c(t6)
+lw t9, 0x0090(t6)
+lw t0, 0x0024(t9)
+lh t8, 0x0002(t0)
+sh t8, 0x0026(sp)
+lw t1, 0x0018(sp)
+jal 0x8027b0c0
+lbu a0, 0x0001(t1)
+lui t3, 0x8033
+lui t4, 0x8033
+lw t4, 0xd93c(t4)
+lw t3, 0xddcc(t3)
+sw t3, 0x0090(t4)
+lw t2, 0x0018(sp)
+lh t6, 0x0006(t2)
+lh t5, 0x0002(t2)
+lh t7, 0x0004(t2)
+mtc1 t6, f4
+mtc1 t5, f16
+mtc1 t7, f6
+svt.s.w f4,f4
+cvt.s.w f12, f16
+mfc1 a2, f4
+jal 0x8028c7a0
+cvt.s.w f14, f6
+lui t0, 0x8033
+lw t0, 0xd93c(t0)
+lh t9, 0x0036(sp)
+lw t8, 0x0090(t0)
+lw t1, 0x0024(t8)
+sh t9, 0x0002(t1)
+Branch1:
+nop
+lw ra, 0x0014(sp)
+addiu sp, sp, 0x28
+jr ra
+nop

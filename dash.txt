@@ -1,0 +1,362 @@
+.orga 0x9E944
+JAL 0x80409800
+NOP
+
+.orga 0x12097F0
+NOP
+NOP
+NOP
+NOP
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+;0x804097FF available dashes
+;0x804097FE dash timer
+;0x804097FA dash start yaw facing - yaw intended
+;0x804097F9 current dash non neutrality
+
+;load init vars
+LUI T0, 0x8034
+LW T1, 0xB17C(T0)
+LUI T5, 0x8041
+
+
+
+;check dash timer
+LB T6, 0x97FE(T5)
+BEQZ T6, NoDashTimer
+
+
+;if = 1, reset dash
+ADDIU T2, R0, 1
+BEQ T2, T6, EndDash
+
+
+ADDIU T6, T6, -1
+SB T6, 0x97FE(T5)
+
+;if != 0, preserve dash speed
+LB T6, 0x97F9(T5)
+BEQZ T6, CurrentDashNonNeutral
+
+LI T2, 0x03000888
+BEQ T1, T2, ThisIsALongjump
+
+LB T2, 0x97FF(T5)
+BNEZ T2, CurrentHHSpeed ;only set y speed if haven't already touched floor
+NOP
+
+SW R0, 0xB1BC(T0) ;y speed = 0
+
+CurrentHHSpeed:
+LUI T4, 0x4282
+MTC1 T4, F4
+LWC1 F6, 0xB1C4(T0) ;only set h speed if higher than current
+C.LT.S F4, F6
+BC1T End
+NOP
+
+B End
+SW T4, 0xB1C4(T0) ;h speed = 65
+
+CurrentDashNonNeutral:
+LHU T6, 0x97FA(T5)
+
+ORI T4, R0, 0x2FFF
+BLE T6, T4, CurrentDashUp
+ORI T4, R0, 0xD001
+BLE T4, T6, CurrentDashUp
+
+ORI T4, R0, 0x5001
+BLT T6, T4, CurrentDashNeutralY
+ORI T4, R0, 0xAFFF
+BLT T4, T6, CurrentDashNeutralY
+
+;current dash down
+LB T2, 0x97FF(T5)
+BNEZ T2, CurrentDashDiagonal ;only set y speed if haven't already touched floor
+
+LI T4, 0xC237D917
+SW T4, 0xB1BC(T0) ;y speed = -45.962
+B CurrentDashDiagonal
+
+CurrentDashUp:
+LB T2, 0x97FF(T5)
+BNEZ T2, CurrentDashDiagonal ;only set y speed if haven't already touched floor
+
+LI T4, 0x4237D917
+SW T4, 0xB1BC(T0) ;y speed = 45.962
+
+CurrentDashDiagonal:
+LI T2, 0x03000888
+BEQ T1, T2, ThisIsALongjump
+
+LI T4, 0x4237D917
+MTC1 T4, F4
+LWC1 F6, 0xB1C4(T0) ;only set h speed if higher than current
+C.LT.S F4, F6
+BC1T End
+NOP
+
+B End
+SW T4, 0xB1C4(T0) ;h speed = 45.962
+
+
+CurrentDashNeutralY:
+LI T2, 0x03000888
+BEQ T1, T2, ThisIsALongjump
+LB T2, 0x97FF(T5)
+BNEZ T2, CurrentNeutralYHSpeed ;only set y speed if haven't already touched floor
+NOP
+
+SW R0, 0xB1BC(T0) ;y speed = 0
+
+CurrentNeutralYHSpeed:
+LUI AT, 0x4220
+B End
+SW AT, 0xB1C4(T0) ;h speed = 40
+
+ThisIsALongjump:
+LUI T4, 0x42a0
+MTC1 T4, F4
+LWC1 F6, 0xB1C4(T0) ;only set h speed if higher than current
+C.LT.S F4, F6
+BC1T End
+NOP
+
+B End
+SW T4, 0xB1C4(T0)
+
+
+EndDash:
+LI T2, 0x03000888
+BEQ T1, T2, ThisIsALongjumpTheSequel
+
+LB T6, 0x97F9(T5)
+BEQZ T6, FinishedDashNonNeutral
+
+LB T2, 0x97FF(T5)
+BNEZ T2, FinishedHHSpeed ;only set y speed if haven't already touched floor
+NOP
+
+SW R0, 0xB1BC(T0) ;y speed = 0
+
+FinishedHHSpeed:
+LUI AT, 0x4220
+B ThisIsALongjumpTheSequel ;this isn't actually a longjump but my branch naming conventions make a lot of sense as always
+SW AT, 0xB1C4(T0) ;h speed = 40
+
+FinishedDashNonNeutral:
+LHU T6, 0x97FA(T5)
+
+ORI T4, R0, 0x2FFF
+BLE T6, T4, FinishedDashUp
+ORI T4, R0, 0xD001
+BLE T4, T6, FinishedDashUp
+
+ORI T4, R0, 0x5001
+BLT T6, T4, FinishedDashDiagonal
+ORI T4, R0, 0xAFFF
+BLT T4, T6, FinishedDashDiagonal
+
+
+;finished dash down
+LB T2, 0x97FF(T5)
+BNEZ T2, FinishedDashDiagonal ;only set y speed if haven't already touched floor
+
+LI T4, 0xC1E245A2
+SW T4, 0xB1BC(T0) ;y speed = -28.284
+B FinishedDashDiagonal
+
+FinishedDashUp:
+LB T2, 0x97FF(T5)
+BNEZ T2, FinishedDashDiagonal ;only set y speed if haven't already touched floor
+
+LI T4, 0x41E245A2
+SW T4, 0xB1BC(T0) ;y speed = 28.284
+
+FinishedDashDiagonal:
+LI T4, 0x41E245A2
+B ThisIsALongjumpTheSequel ;this isn't actually a longjump but my branch naming conventions make a lot of sense as always
+SW T4, 0xB1C4(T0)
+
+FinishedDashNeutralY:
+LB T2, 0x97FF(T5)
+BNEZ T2, FinishedNeutralYHSpeed ;only set y speed if haven't already touched floor
+NOP
+
+SW R0, 0xB1BC(T0) ;y speed = 0
+
+FinishedNeutralYHSpeed:
+LUI AT, 0x4220
+SW AT, 0xB1C4(T0) ;h speed = 40
+
+ThisIsALongjumpTheSequel:
+SB R0, 0x97F9(T5)
+SH R0, 0x97FA(T5)
+SB R0, 0x97FE(T5)
+B End
+
+
+
+NoDashTimer:
+;check if midair
+LH T2, 0x97F0(T5)
+BEQZ T2, End
+
+;check available dashes
+LB T6, 0x97FF(T5)
+BEQZ T6, End
+
+;check for wk timer
+LB T2, 0xB19A(T0)
+BNEZ T2, End
+
+;check if A
+LB T2, 0xAFA2(T0)
+ANDI T2, T2, 0x80
+BEQZ T2, End
+
+
+;general dash stuff
+ADDIU T6, T6, -1
+SB T6, 0x97FF(T5) ;decrease available dash counter by 1
+ADDIU T6, R0, 8
+SB T6, 0x97FE(T5) ;set dash timer to 8
+SB R0, 0xB19A(T0) ;set wk timer to 0
+
+LI T2, 0x03000881 ;0x02800881
+SW T2, 0xB17C(T0)
+
+;check for neutral
+ADDIU T3, R0, 25
+LBU T2, 0xAFFA(T0)
+BLT T3, T2, NonNeutral ;check for neutral stick
+LBU T2, 0xAFFB(T0)
+BLT T3, T2, NonNeutral
+
+ADDIU T6, R0, 1
+B NeutralY
+SB T6, 0x97F9(T5)
+
+NonNeutral:
+SB R0, 0x97F9(T5)
+LHU T2, 0xB19E(T0) ;yaw facing
+LHU T3, 0xB194(T0) ;yaw intended
+SUBU T2, T2, T3
+ANDI T2, T2, 0xFFFF
+SH T2, 0x97FA(T5)
+
+;fuck it I'm treating these as unsigned and there is nothing you can do to stop me
+; 0/16 =     0 = 0x0000 (up)           -> D001 - 2FFF up
+; 1/16 =  4096 = 0x1000
+; 2/16 =  8192 = 0x2000 (upright)
+; 3/16 = 12288 = 0x3000
+; 4/16 = 16384 = 0x4000 (right)        -> 1001 - 6FFF right
+; 5/16 = 20480 = 0x5000
+; 6/16 = 24576 = 0x6000 (downright)
+; 7/16 = 28672 = 0x7000
+; 8/16 = 32678 = 0x8000 (down)         -> 5001 - AFFF down
+; 9/16 = 36864 = 0x9000
+;10/16 = 40960 = 0xA000 (downleft)
+;11/16 = 45056 = 0xB000
+;12/16 = 49152 = 0xC000 (left)         -> 9001 - EFFF left
+;13/16 = 53248 = 0xD000
+;14/16 = 57344 = 0xE000 (upleft)
+;15/16 = 61440 = 0xF000
+
+ORI T4, R0, 0x1001
+BLT T2, T4, NotRight
+ORI T4, R0, 0x6FFF
+BLT T4, T2, NotRight
+
+;right
+LH AT, 0xB19E(T0)
+ADDIU AT, AT, -8192 ;decrease mario facing angle by 45º
+B CheckY
+SH AT, 0xB19E(T0)
+
+NotRight:
+ORI T4, R0, 0x9001
+BLT T2, T4, CheckY
+ORI T4, R0, 0xEFFF
+BLT T4, T2, CheckY
+
+;left
+LH AT, 0xB19E(T0)
+ADDIU AT, AT, 8192 ;increase mario facing angle by 45º
+SH AT, 0xB19E(T0)
+
+
+CheckY:
+ORI T4, R0, 0x2FFF
+BLE T2, T4, Up
+ORI T4, R0, 0xD001
+BLE T4, T2, Up
+
+ORI T4, R0, 0x5001
+BLT T2, T4, NeutralY
+ORI T4, R0, 0xAFFF
+BLT T4, T2, NeutralY
+
+;down
+LB T2, 0x97FF(T5)
+BNEZ T2, SetDiagDashHSpeed ;only set y speed if haven't already touched floor
+
+LI T4, 0xC237D917
+B SetDiagDashHSpeed
+SW T4, 0xB1BC(T0) ;y speed = -45.962
+
+Up:
+LB T2, 0x97FF(T5)
+BNEZ T2, SetDiagDashHSpeed ;only set y speed if haven't already touched floor
+
+LI T4, 0x4237D917
+SW T4, 0xB1BC(T0) ;y speed = 45.962
+
+SetDiagDashHSpeed:
+LI T4, 0x4237D917
+MTC1 T4, F4
+LWC1 F6, 0xB1C4(T0) ;only set h speed if higher than current
+C.LT.S F4, F6
+BC1T End
+NOP
+
+B End
+SW T4, 0xB1C4(T0) ;h speed = 45.962
+
+NeutralY:
+LB T2, 0x97FF(T5)
+BNEZ T2, NeutralYHSpeed ;only set y speed if haven't already touched floor
+NOP
+
+SW R0, 0xB1BC(T0) ;y speed = 0
+
+NeutralYHSpeed:
+LUI T4, 0x4282
+MTC1 T4, F4
+LWC1 F6, 0xB1C4(T0) ;only set h speed if higher than current
+C.LT.S F4, F6
+BC1T End
+NOP
+
+SW T4, 0xB1C4(T0) ;h speed = 65
+
+
+
+End:
+;check if midair
+LH T2, 0x97F0(T5)
+BNEZ T2, Airborne
+
+;grounded
+ADDIU T6, R0, 1
+SB T6, 0x97FF(T5)
+
+Airborne:
+ANDI T2, T1, 0x0800
+SH T2, 0x97F0(T5)
+
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

@@ -1,0 +1,107 @@
+.headersize 0x7F200000
+.orga 0x9E8EC
+JAL SavestateCheck
+NOP
+
+.orga 0x1207000
+
+
+SCinit:
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LI A0, 0x9FFF0010
+JAL SCstore ;store a bunch of nonsense into summercart, it's weird shit that I don't understand, aglab says it makes summercart "device" do fun stuff
+ADDIU A1, R0, 2
+
+LI A0, 0x9FFF0010
+LUI A1, 0x5F55
+JAL SCstore
+ADDIU A1, A1, 0x4E4C
+
+LI A0, 0x9FFF0010
+LUI A1, 0x4F43
+JAL SCstore
+ADDIU A1, A1, 0x4B5F
+
+LI A0, 0x9FFF000C
+JAL SCload
+NOP
+LI T0, 0x53437632 ;if these values are equal that means summercart is supported, idk why aglab knows
+BEQ T0, V0, Valid
+NOP
+
+B EndSCinit
+ADDIU T2, R0, 1
+
+Valid:
+ADDIU T2, R0, 2
+
+EndSCinit:
+SW T2, SCstate
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+
+SCload:
+JR RA
+LW V0, 0(A0)
+
+SCstore:
+JR RA
+SW A1, 0(A0)
+
+
+SavestateCheck:
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LW T0, SCstate ;get summercart state
+BNEZ T0, SkipInit
+NOP
+
+JAL SCinit ;init summercart if state is 0
+NOP
+LW T0, SCstate ;get T0 back after JAL
+
+SkipInit:
+ADDIU T1, R0, 1
+BNE T0, T1, SummercartWorks
+
+;summercart disabled or unsupported, print icon here
+
+B End
+NOP
+
+SummercartWorks: ;summercart works, proceed to check for savestates
+
+;todo: check for level transitions
+
+LI A0, 0x9FFF0100
+JAL SCload
+NOP
+
+LUI T0, 0x8041
+LW T1, RamTimer
+BEQ V0, T1, Good
+NOP
+
+;savestate was loaded, print icon here
+
+Good:
+ADDIU V0, V0, 1
+SW V0, RamTimer
+LI A0, 0x9FFF0100
+JAL SCstore
+OR A1, V0, R0
+
+End:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+RamTimer:
+NOP
+SCstate:
+NOP ;summercart state. 0 = uninitialized, 1 = unsupported, 2 = active

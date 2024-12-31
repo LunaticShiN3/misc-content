@@ -1,0 +1,43 @@
+.orga 0x21AC88
+.dw 0x00060000
+.dw 0x11014001
+.dw 0x08000000
+.dd 0x0C0000008040F600
+.dw 0x09000000
+
+.orga 0x120F600
+ADDIU SP, SP, 0xFFE8
+OR FP, R0, RA
+
+LUI T0, 0x8036
+LW T0, 0x1160(T0)
+LH T0, 0x188(T0)
+LUI A0, 0x1300
+JAL 0x8029F95C ;nearest obj with behavior. A0 = segmented behav ID, V0 = obj ptr
+OR A0, A0, T0
+
+BNEZ V0, End
+NOP
+
+LUI T0, 0x8036
+LW T0, 0x1160(T0)
+
+ADDIU A1, R0, 0
+ADDIU A2, R0, 0
+SW T0, 0x10(SP)
+LB T0, 0x18A(T0)
+SW T0, 0x14(SP)
+LI T0, 0x130007A0
+SW T0, 0x18(SP)
+JAL 0x8029EF64 ;spawn object relative. A0 = BParam2, A1 = rel XPos, A2 = rel YPos, A3 = rel ZPos, 10SP = parent pointer, 14SP = model ID, 18SP = segmented behav ID
+ADDIU A0, R0, 50
+
+LUI T0, 0x8036
+LW T0, 0x1160(T0)
+JAL 0x802A0568
+NOP
+
+End:
+OR RA, R0, FP
+JR RA
+ADDIU SP, SP, 0x18

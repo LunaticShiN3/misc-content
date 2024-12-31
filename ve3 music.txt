@@ -1,0 +1,68 @@
+.orga 0x2541174 ;overworld 1
+.dd 0x3608000000040000 ;ID 0x04 ()
+
+.orga 0x27E1174 ;wing cap
+.dd 0x3608000000060000 ;ID 0x06 ()
+
+.orga 0x1901174 ;course 3
+.dd 0x3608000000230000 ;ID 0x23 (touhou 1)
+
+.orga 0x2381174 ;course 2
+.dd 0x3608000000240000 ;ID 0x24 (touhou 2)
+
+.orga 0x1BA1174 ;crudelo
+.dd 0x3608000000250000 ;ID 0x25 (touhou 3)
+
+.orga 0x1D61174 ;bowser 1
+.dd 0x3608000000260000 ;ID 0x26 (touhou 4)
+
+.orga 0x29A1174 ;overworld 2
+.dd 0x36080000000C0000 ;ID 0x0C 
+
+.orga 0x2621174 ;slide
+.dd 0x3608000000270000 ;ID 0x27 (touhou 5)
+
+.orga 0x1661174 ;course 1
+.dd 0x3608000000280000 ;ID 0x28 (touhou 6)
+
+.orga 0x21C1174 ;course 7
+.dd 0x3608000000290000 ;ID 0x29 (touhou 7)
+
+.orga 0x2C41174 ;course 12
+.dd 0x36080000002A0000 ;ID 0x2A (touhou 8)
+
+.orga 0x14A1174 ;course 6
+.dd 0x36080000002B0000 ;ID 0x2B (touhou 9)
+
+.orga 0x22A1174 ;course 9
+.dd 0x36080000002C0000 ;ID 0x2C (touhou 10)
+
+.orga 0x1581174 ;course 8
+.dd 0x36080000002D0000 ;ID 0x2D (touhou 11)
+
+.orga 0x1E41174 ;vanish cap
+.dd 0x36080000002E0000 ;ID 0x2E (touhou 12)
+
+.orga 0x12E1174 ;course 4
+.dd 0x36080000002F0000 ;ID 0x2F (touhou 13)
+
+.orga 0x13C1174 ;overworld 3
+.dd 0x3608000000110000 ;ID 0x11 ()
+
+.orga 0x1821174 ;course 11
+.dd 0x3608000000300000 ;ID 0x30 (touhou 14)
+
+.orga 0x1AC1174 ;veneno
+.dd 0x3608000000310000 ;ID 0x31 (touhou 15)
+
+.orga 0x2701174 ;metal cap
+.dd 0x3608000000320000 ;ID 0x32 (touhou 16)
+
+.orga 0x20E1174 ;ztar
+.dd 0x3608000000330000 ;ID 0x33 (touhou 17)
+
+.orga 0x1F21174 ;bqp
+.dd 0x3608000000330000 ;ID 0x33 (touhou 17)
+
+.orga 0x2001174 ;triarc
+.dd 0x3608000000340000 ;ID 0x34 (touhou 18)

@@ -1,0 +1,64 @@
+<NotepadPlus>
+    <UserLang name="MIPS N64" ext="s" udlVersion="2.1">
+        <Settings>
+            <Global caseIgnored="yes" allowFoldOfComments="yes" foldCompact="no" forcePureLC="0" decimalSeparator="0" />
+            <Prefix Keywords1="no" Keywords2="yes" Keywords3="no" Keywords4="yes" Keywords5="no" Keywords6="no" Keywords7="no" Keywords8="no" />
+        </Settings>
+        <KeywordLists>
+            <Keywords name="Comments">00; 01 02 03;;; 04;;;</Keywords>
+            <Keywords name="Numbers, prefix1">0x</Keywords>
+            <Keywords name="Numbers, prefix2"></Keywords>
+            <Keywords name="Numbers, extras1"></Keywords>
+            <Keywords name="Numbers, extras2"></Keywords>
+            <Keywords name="Numbers, suffix1"></Keywords>
+            <Keywords name="Numbers, suffix2"></Keywords>
+            <Keywords name="Numbers, range"></Keywords>
+            <Keywords name="Operators1">, ( )</Keywords>
+            <Keywords name="Operators2"></Keywords>
+            <Keywords name="Folders in code1, open"></Keywords>
+            <Keywords name="Folders in code1, middle"></Keywords>
+            <Keywords name="Folders in code1, close"></Keywords>
+            <Keywords name="Folders in code2, open"></Keywords>
+            <Keywords name="Folders in code2, middle"></Keywords>
+            <Keywords name="Folders in code2, close"></Keywords>
+            <Keywords name="Folders in comment, open"></Keywords>
+            <Keywords name="Folders in comment, middle"></Keywords>
+            <Keywords name="Folders in comment, close"></Keywords>
+            <Keywords name="Keywords1">ADDI&#x000D;&#x000A;SUBI&#x000D;&#x000A;ADDIU&#x000D;&#x000A;SUBIU&#x000D;&#x000A;SLTI&#x000D;&#x000A;SLTIU&#x000D;&#x000A;ANDI&#x000D;&#x000A;ORI&#x000D;&#x000A;XORI&#x000D;&#x000A;LUI&#x000D;&#x000A;COP2&#x000D;&#x000A;BEQL&#x000D;&#x000A;BEQZL&#x000D;&#x000A;DADDI&#x000D;&#x000A;DSUBI&#x000D;&#x000A;DADDIU&#x000D;&#x000A;DSUBIU&#x000D;&#x000A;LDL&#x000D;&#x000A;LDR&#x000D;&#x000A;LQ&#x000D;&#x000A;SQ&#x000D;&#x000A;LB&#x000D;&#x000A;LH&#x000D;&#x000A;LWL&#x000D;&#x000A;LW&#x000D;&#x000A;LBU&#x000D;&#x000A;LHU&#x000D;&#x000A;LWR&#x000D;&#x000A;LWU&#x000D;&#x000A;SB&#x000D;&#x000A;SH&#x000D;&#x000A;SWL&#x000D;&#x000A;SW&#x000D;&#x000A;SDL&#x000D;&#x000A;SDR&#x000D;&#x000A;SWR&#x000D;&#x000A;CACHE&#x000D;&#x000A;LL&#x000D;&#x000A;LWC1&#x000D;&#x000A;L.S&#x000D;&#x000A;LWC2&#x000D;&#x000A;LV.S&#x000D;&#x000A;LLD&#x000D;&#x000A;LDC1&#x000D;&#x000A;L.D&#x000D;&#x000A;ULV.Q&#x000D;&#x000A;LVL.Q&#x000D;&#x000A;LVR.Q&#x000D;&#x000A;LV.Q&#x000D;&#x000A;LQC2&#x000D;&#x000A;LD&#x000D;&#x000A;SCSWC1&#x000D;&#x000A;S.S&#x000D;&#x000A;SWC2&#x000D;&#x000A;SV.S&#x000D;&#x000A;SCD&#x000D;&#x000A;SDC1&#x000D;&#x000A;S.D&#x000D;&#x000A;USV.Q&#x000D;&#x000A;SVL.Q&#x000D;&#x000A;SVR.Q&#x000D;&#x000A;SV.Q&#x000D;&#x000A;SQC2&#x000D;&#x000A;SD&#x000D;&#x000A;SLL&#x000D;&#x000A;NOP&#x000D;&#x000A;SRL&#x000D;&#x000A;ROTR&#x000D;&#x000A;SRA&#x000D;&#x000A;SLLV&#x000D;&#x000A;SRLV&#x000D;&#x000A;ROTRV&#x000D;&#x000A;SRAV&#x000D;&#x000A;MOVZ&#x000D;&#x000A;MOVN&#x000D;&#x000A;SYSCALL&#x000D;&#x000A;BREAK&#x000D;&#x000A;SYNC&#x000D;&#x000A;MFHI&#x000D;&#x000A;MTHI&#x000D;&#x000A;MFLO&#x000D;&#x000A;MTLO&#x000D;&#x000A;DSLLV&#x000D;&#x000A;DSRLV&#x000D;&#x000A;CLZ&#x000D;&#x000A;DRSAV&#x000D;&#x000A;CLO&#x000D;&#x000A;MULT&#x000D;&#x000A;MULTU&#x000D;&#x000A;DIV&#x000D;&#x000A;DIVU&#x000D;&#x000A;DMULT&#x000D;&#x000A;MADD&#x000D;&#x000A;DMULTU&#x000D;&#x000A;MADDU&#x000D;&#x000A;DDIV&#x000D;&#x000A;DDIVU&#x000D;&#x000A;ADD&#x000D;&#x000A;ADDU&#x000D;&#x000A;MOVE&#x000D;&#x000A;CLEAR&#x000D;&#x000A;SUB&#x000D;&#x000A;NEG&#x000D;&#x000A;SUBU&#x000D;&#x000A;NEGU&#x000D;&#x000A;AND&#x000D;&#x000A;OR&#x000D;&#x000A;XOR&#x000D;&#x000A;EOR&#x000D;&#x000A;NOR&#x000D;&#x000A;NOT&#x000D;&#x000A;MFSA&#x000D;&#x000A;MTSA&#x000D;&#x000A;SLT&#x000D;&#x000A;SGT&#x000D;&#x000A;SLTU&#x000D;&#x000A;SGTU&#x000D;&#x000A;DADD&#x000D;&#x000A;MAX&#x000D;&#x000A;DADDU&#x000D;&#x000A;DMOVE&#x000D;&#x000A;MIN&#x000D;&#x000A;DSUB&#x000D;&#x000A;DNEG&#x000D;&#x000A;MSUB&#x000D;&#x000A;DSUBU&#x000D;&#x000A;DNEGU&#x000D;&#x000A;MSUBU&#x000D;&#x000A;DSLL&#x000D;&#x000A;DSRL&#x000D;&#x000A;DSRA&#x000D;&#x000A;DSLL32&#x000D;&#x000A;DSRL32&#x000D;&#x000A;DSRA32&#x000D;&#x000A;MTSAB&#x000D;&#x000A;MTSAH&#x000D;&#x000A;MFC0&#x000D;&#x000A;DMFC0&#x000D;&#x000A;MTC0&#x000D;&#x000A;DMTC0&#x000D;&#x000A;TLBR&#x000D;&#x000A;TLBWI&#x000D;&#x000A;TLBWR&#x000D;&#x000A;TLBP&#x000D;&#x000A;RFE&#x000D;&#x000A;ERET&#x000D;&#x000A;MFC1&#x000D;&#x000A;DMFC1&#x000D;&#x000A;CFC1&#x000D;&#x000A;MTC1&#x000D;&#x000A;DMTC1&#x000D;&#x000A;CTC1&#x000D;&#x000A;BC1F&#x000D;&#x000A;BC1T&#x000D;&#x000A;BC1FL&#x000D;&#x000A;BC1TL&#x000D;&#x000A;ADD.S&#x000D;&#x000A;SUB.S&#x000D;&#x000A;MUL.S&#x000D;&#x000A;DIV.S&#x000D;&#x000A;SQRT.S&#x000D;&#x000A;ABS.S&#x000D;&#x000A;MOV.S&#x000D;&#x000A;NEG.S&#x000D;&#x000A;ROUND.L.S&#x000D;&#x000A;TRUNC.L.S&#x000D;&#x000A;CEIL.L.S&#x000D;&#x000A;FLOOR.L.S&#x000D;&#x000A;ROUND.W.S&#x000D;&#x000A;TRUNC.W.S&#x000D;&#x000A;CEIL.W.S&#x000D;&#x000A;FLOOR.W.S&#x000D;&#x000A;RSQRT.W.S&#x000D;&#x000A;ADDA.S&#x000D;&#x000A;SUBA.S&#x000D;&#x000A;MULA.S&#x000D;&#x000A;MADD.S&#x000D;&#x000A;MSUB.S&#x000D;&#x000A;MADDA.S&#x000D;&#x000A;MSUBA.S&#x000D;&#x000A;CVT.D.S&#x000D;&#x000A;CVT.W.S&#x000D;&#x000A;CVT.L.S&#x000D;&#x000A;MAX.S&#x000D;&#x000A;MIN.S&#x000D;&#x000A;C.F.S&#x000D;&#x000A;C.UN.S&#x000D;&#x000A;C.EQ.S&#x000D;&#x000A;C.UEQ.S&#x000D;&#x000A;C.OLT.S&#x000D;&#x000A;C.LT.S&#x000D;&#x000A;C.ULT.S&#x000D;&#x000A;C.OLE.S&#x000D;&#x000A;C.LE.S&#x000D;&#x000A;C.ULE.S&#x000D;&#x000A;C.SF.S&#x000D;&#x000A;C.NGLE.S&#x000D;&#x000A;C.SEQ.S&#x000D;&#x000A;C.NGL.S&#x000D;&#x000A;C.NGE.S&#x000D;&#x000A;C.NGT.S&#x000D;&#x000A;ADD.D&#x000D;&#x000A;SUB.D&#x000D;&#x000A;MUL.D&#x000D;&#x000A;DIV.D&#x000D;&#x000A;SQRT.D&#x000D;&#x000A;ABS.D&#x000D;&#x000A;MOV.D&#x000D;&#x000A;NEG.D&#x000D;&#x000A;ROUND.L.D&#x000D;&#x000A;TRUNC.L.D&#x000D;&#x000A;CEIL.L.D&#x000D;&#x000A;FLOOR.L.D&#x000D;&#x000A;ROUND.W.D&#x000D;&#x000A;TRUNC.W.D&#x000D;&#x000A;CEIL.W.D&#x000D;&#x000A;FLOOR.W.D&#x000D;&#x000A;CVT.S.D&#x000D;&#x000A;CVT.W.D&#x000D;&#x000A;CVT.L.D&#x000D;&#x000A;C.F.D&#x000D;&#x000A;C.UN.D&#x000D;&#x000A;C.EQ.D&#x000D;&#x000A;C.UEQ.D&#x000D;&#x000A;C.OLT.D&#x000D;&#x000A;C.ULT.D&#x000D;&#x000A;C.OLE.D&#x000D;&#x000A;C.ULE.D&#x000D;&#x000A;C.SF.D&#x000D;&#x000A;C.NGLE.D&#x000D;&#x000A;C.SEQ.D&#x000D;&#x000A;C.NGL.D&#x000D;&#x000A;C.LT.D&#x000D;&#x000A;C.NGE.D&#x000D;&#x000A;C.LE.D&#x000D;&#x000A;C.NGT.D&#x000D;&#x000A;CVT.S.W&#x000D;&#x000A;CVT.D.W&#x000D;&#x000A;CVT.S.L&#x000D;&#x000A;CVT.D.L&#x000D;&#x000A;MFC2&#x000D;&#x000A;CFC2&#x000D;&#x000A;MTC2&#x000D;&#x000A;CTC2&#x000D;&#x000A;MFV&#x000D;&#x000A;MFVC&#x000D;&#x000A;MTV&#x000D;&#x000A;MTVC&#x000D;&#x000A;BVF&#x000D;&#x000A;BVT&#x000D;&#x000A;BVFL&#x000D;&#x000A;BVTL&#x000D;&#x000A;EXT&#x000D;&#x000A;INS&#x000D;&#x000A;WSBH&#x000D;&#x000A;WSBW&#x000D;&#x000A;SDB&#x000D;&#x000A;BITREV&#x000D;&#x000A;SEH&#x000D;&#x000A;LI</Keywords>
+            <Keywords name="Keywords2">.</Keywords>
+            <Keywords name="Keywords3">R0&#x000D;&#x000A;AT&#x000D;&#x000A;T0&#x000D;&#x000A;T1&#x000D;&#x000A;T2&#x000D;&#x000A;T3&#x000D;&#x000A;T4&#x000D;&#x000A;T5&#x000D;&#x000A;T6&#x000D;&#x000A;T7&#x000D;&#x000A;T8&#x000D;&#x000A;T9&#x000D;&#x000A;A0&#x000D;&#x000A;A1&#x000D;&#x000A;A2&#x000D;&#x000A;A3&#x000D;&#x000A;V0&#x000D;&#x000A;V1&#x000D;&#x000A;S0&#x000D;&#x000A;S1&#x000D;&#x000A;S2&#x000D;&#x000A;S3&#x000D;&#x000A;S4&#x000D;&#x000A;S5&#x000D;&#x000A;S6&#x000D;&#x000A;S7&#x000D;&#x000A;K0&#x000D;&#x000A;K1&#x000D;&#x000A;SP&#x000D;&#x000A;FP&#x000D;&#x000A;GP&#x000D;&#x000A;RA&#x000D;&#x000A;HI&#x000D;&#x000A;LO&#x000D;&#x000A;F0&#x000D;&#x000A;F1&#x000D;&#x000A;F2&#x000D;&#x000A;F3&#x000D;&#x000A;F4&#x000D;&#x000A;F5&#x000D;&#x000A;F6&#x000D;&#x000A;F7&#x000D;&#x000A;F8&#x000D;&#x000A;F9&#x000D;&#x000A;F10&#x000D;&#x000A;F11&#x000D;&#x000A;F12&#x000D;&#x000A;F13&#x000D;&#x000A;F14&#x000D;&#x000A;F15&#x000D;&#x000A;F16&#x000D;&#x000A;F17&#x000D;&#x000A;F18&#x000D;&#x000A;F19&#x000D;&#x000A;F20&#x000D;&#x000A;F21&#x000D;&#x000A;F22&#x000D;&#x000A;F23&#x000D;&#x000A;F24&#x000D;&#x000A;F25&#x000D;&#x000A;F26&#x000D;&#x000A;F27&#x000D;&#x000A;F28&#x000D;&#x000A;F29&#x000D;&#x000A;F30&#x000D;&#x000A;F31</Keywords>
+            <Keywords name="Keywords4">0x</Keywords>
+            <Keywords name="Keywords5">J&#x000D;&#x000A;JAL&#x000D;&#x000A;BEQ&#x000D;&#x000A;BEQZ&#x000D;&#x000A;B&#x000D;&#x000A;BNE&#x000D;&#x000A;BNEZ&#x000D;&#x000A;BLEZ&#x000D;&#x000A;BGTZ&#x000D;&#x000A;BNEL&#x000D;&#x000A;BNEZL&#x000D;&#x000A;BLEZL&#x000D;&#x000A;BGTZL&#x000D;&#x000A;JR&#x000D;&#x000A;JALR&#x000D;&#x000A;TGE&#x000D;&#x000A;TGEU&#x000D;&#x000A;TLT&#x000D;&#x000A;TLTU&#x000D;&#x000A;TEQ&#x000D;&#x000A;TNE&#x000D;&#x000A;BLTZ&#x000D;&#x000A;BGEZ&#x000D;&#x000A;BLTZL&#x000D;&#x000A;BGEZL&#x000D;&#x000A;TGEI&#x000D;&#x000A;TGEIU&#x000D;&#x000A;TLTI&#x000D;&#x000A;TLTIU&#x000D;&#x000A;TEQI&#x000D;&#x000A;TNEI&#x000D;&#x000A;BLTZAL&#x000D;&#x000A;BGEZAL&#x000D;&#x000A;BAL&#x000D;&#x000A;BLTZALL&#x000D;&#x000A;BGEZALL</Keywords>
+            <Keywords name="Keywords6"></Keywords>
+            <Keywords name="Keywords7"></Keywords>
+            <Keywords name="Keywords8"></Keywords>
+            <Keywords name="Delimiters">00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23</Keywords>
+        </KeywordLists>
+        <Styles>
+            <WordsStyle name="DEFAULT" fgColor="D8B0FF" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="COMMENTS" fgColor="808080" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="LINE COMMENTS" fgColor="808080" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="NUMBERS" fgColor="00E8E8" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS1" fgColor="E65B5B" bgColor="FFFFFF" colorStyle="1" fontStyle="1" nesting="0" />
+            <WordsStyle name="KEYWORDS2" fgColor="FF80C0" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS3" fgColor="FFE3CA" bgColor="FFFFFF" colorStyle="1" fontStyle="3" nesting="0" />
+            <WordsStyle name="KEYWORDS4" fgColor="00E8E8" bgColor="80FFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS5" fgColor="80FF80" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS6" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS7" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS8" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="OPERATORS" fgColor="FFBD82" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="FOLDER IN CODE1" fgColor="000000" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="FOLDER IN CODE2" fgColor="000000" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="FOLDER IN COMMENT" fgColor="000000" bgColor="FFFFFF" colorStyle="1" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS1" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS2" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS3" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS4" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS5" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS6" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS7" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS8" fgColor="000000" bgColor="FFFFFF" fontStyle="0" nesting="0" />
+        </Styles>
+    </UserLang>
+</NotepadPlus>
