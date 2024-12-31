@@ -1,0 +1,145 @@
+.headersize 0x7F200000
+
+.orga 0x5E79C
+.dh 0x2400
+.orga 0x5E7C0
+.dh 0x2400
+
+.orga 0x9E8F4
+JAL 0x8040F680
+NOP
+.dw 0x19C00012
+
+.orga 0x120F680
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI T0, 0x8036
+LW T1, 0x77AC(T0)
+BEQZ T1, NotSecondFrame
+NOP
+
+SW R0, 0x77AC(T0)
+LUI T0, 0x8034
+ADDIU T1, R0, 0x0101
+SH T1, 0xC6D4(T0)
+
+NotSecondFrame:
+LUI T2, 0x8034
+LH T2, 0xB238(T2) ;checks if game is paused
+ADDIU T3, R0, 2
+BNE T2, T3, NoPause
+
+LI A2, LText
+ADDIU A0, R0, 160 ;prints l text
+JAL 0x802D66C0
+ADDIU A1, R0, 0
+
+LUI T0, 0x8036 ;loads mode
+LW T1, 0x779C(T0)
+
+LUI T2, 0x8034
+LB T2, 0xAFA3(T2)
+ANDI T2, T2, 0x0020
+
+BNEZ T1, On ;branch to on if mode is on
+NOP
+
+BEQZ T2, NoChange1 ;branch if no l press
+
+ADDIU T3, R0, 1
+SW T3, 0x779C(T0) ;set mode to on
+
+NoChange1:
+LI A2, OffText
+ADDIU A0, R0, 160 ;prints off text
+JAL 0x802D66C0
+ADDIU A1, R0, 30
+B NoPause ;end
+NOP
+
+On:
+BEQZ T2, NoChange2 ;branch if no l press
+NOP
+
+SW R0, 0x779C(T0) ;set mode to off
+
+NoChange2:
+LI A2, OnText
+ADDIU A0, R0, 160 ;print on text
+JAL 0x802D66C0
+ADDIU A1, R0, 30
+
+NoPause:
+LUI T0, 0x8036 ;loads mode
+LW T1, 0x779C(T0)
+BEQZ T1, Reality
+
+;LUI T0, 0x802A
+;ADDIU T1, R0, 0x2400
+;SH T1, 0xCE9C(T0)
+;SH T1, 0xCEC0(T0)
+
+LI T4, 0x8033B170
+LW T5, 0x000C(T4)
+ADDIU AT, R0, 0x1321
+BEQ T5, AT, Reality
+NOP
+ADDIU AT, R0, 0x1320
+BEQ T5, AT, Reality
+NOP
+
+LI T0, 0x8033B170
+
+LB T1, 0xAE(T0)
+BEQZ T1, Dreams
+NOP
+
+LW T1, 0xC(T0)
+LI T2, 0x21312
+BEQ T1, T2, Dreams
+NOP
+
+LUI T9, 0x8034
+LH T1, 0xBAB0(T9)
+ADDIU T2, R0, 267
+BEQ T1, T2, Dreams
+NOP
+
+B Reality
+NOP
+
+Dreams:
+LUI T0, 0x8034
+ADDIU T1, R0, 0x000A ;change this line if you want to use a warp ID that isn't 10. Remember that it's hex.
+SB T1, 0xB24B(T0)
+ADDIU T1, R0, 0x0880
+SH T1, 0xB21E(T0)
+ADDIU T1, R0, 0x0000
+SH T1, 0xB262(T0)
+SH T1, 0xB218(T0)
+ADDIU T1, R0, 0x0002
+SB T1, 0xB248(T0)
+ADDIU T1, R0, 0x0101
+SH T1, 0xC6D4(T0)
+LUI T0, 0x8036
+ADDIU T1, R0, 0x0005
+SH T1, 0x1414(T0)
+ADDIU T1, R0, 0x0001
+SW T1, 0x77AC(T0)
+LI T0, 0x8033B170
+ADDIU T1, R0, 0x0008
+SB T1, 0xB3(T0)
+
+Reality:
+ADDIU T6, R0, 0
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+OffText:
+.asciiz "LEVEL RESET OFF"
+OnText:
+.asciiz "LEVEL RESET ON"
+LText:
+.asciiz "L TO TOGGLE"

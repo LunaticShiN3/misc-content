@@ -1,0 +1,282 @@
+.orga 0x349DC ;load eeprom function
+ADDIU SP, SP, -0x30
+SW RA, 0x1C(SP)
+
+LUI AT, 0x8034
+SB R0, 0xB4A5(AT) ;set value at 0x8033B4A5 to 0 (false)
+SB R0, 0xB4A6(AT) ;set value at 0x8033B4A6 to 0 (false)
+
+LA A0, 0x80207700
+JAL 0x80324570 ;bzero function
+ADDIU A1, R0, 0x200
+
+LA A0, 0x80207700
+JAL 0x80279174 ;copy eeprom to 0x80207700
+ADDIU A1, R0, 0x200
+
+LW RA, 0x1C(SP)
+JR RA
+ADDIU SP, SP, 0x30
+
+;----------------------------------------------------------------------------------------------------------------------------------------------;
+
+.orga 0x34840
+ADDIU SP, SP, -0x18
+SW RA, 0x14(SP)
+SW A0, 0x18 (SP)
+
+LB T6, 0x8033B4A6 ;0x8033B4A6 = gSaveFileModified (boolean)
+BEQZ T6, skipfilesave ;branch to end if gSaveFileModified is FALSE
+NOP
+
+LW T4, 0x18(SP)
+LA T6, 0x80207700
+SLL T5, T4, 3
+SUBU T5, T5, T4
+SLL T5, T5, 4
+ADDU A0, T5, T6 ;A0 = buffer pointer to write
+JAL 0x80279218 ;call write_eeprom_data(buffer, size), tries to write to eeprom 4 times before giving up.
+ADDIU A1, R0, 0x70 ;A1 = size of buffer
+
+SB R0, 0x8034B4A6 ;set gSaveFileModified to FALSE
+
+skipfilesave:
+JAL 0x802794A0 ;call save_main_menu_data() function
+NOP
+
+LW RA, 0x14(SP) ;end of function
+JR RA
+ADDIU SP, SP, 0x18
+
+;----------------------------------------------------------------------------------------------------------------------------------------------;
+
+.orga 0x344A0 ;savemenudata function
+ADDIU SP, SP, -0x18
+SW RA, 0x14(SP)
+
+LA T6, 0x8033B4A5 ;0x8033B4A5 = gMainMenuDataModified (boolean)
+BEQZ T6, skipmenusave ;branch to end if gMainMenuDataModified is FALSE
+NOP
+
+LA A0, 0x80207700
+ADDIU A0, A0, 0x1C0 ;A0 = buffer pointer to write
+JAL 0x80279218 ;call write_eeprom_data(buffer, size), tries to write to eeprom 4 times before giving up.
+ADDIU A1, R0, 0x40 ;A1 = size of buffer
+
+SB R0, 0x8033B4A5 ;set value at 0x8033B4A5 to 0 (false)
+
+skipmenusave:
+LW RA, 0x14(SP) ;end of function
+JR RA
+ADDIU SP, SP, 0x18
+
+;----------------------------------------------------------------------------------------------------------------------------------------------;
+
+.orga 0x861C0; aka somewhere that runs every frame
+OR V0, R0, RA
+JAL 0x8040F780
+NOP
+
+.orga 0x120F780
+
+LA T0, 0x80367538
+LB T0, 0(T0)
+ADDIU T1, R0, 0x72
+BNE T0, T1, Continue
+NOP
+
+LA T2, 0x8032D5D4 ;sets global timer to 0
+SW R0, 0(T2)
+SB T1, 0(T0)
+
+Continue:
+ADDIU T6, R0, 0 ;sets T6 to 0 for later just in case
+
+LA A0, 0x8033AF78
+ADDIU A1, R0, 0x1 ;A1 = eeprom address/8
+LA A2, 0x80367500 ;loads flag memes from eeprom into 0x120F778
+ADDIU A3, R0, 0x8 ;A3 = amount of bytes
+LA T9, 0x80367520
+SW A0, 0(T9)
+SW A1, 4(T9)
+SW A2, 8(T9)
+SW A3, 0xC(T9)
+SW T6, 0x10(T9)
+JAL 0x80324690 ;loads value from EEPROM
+NOP
+LA T9, 0x80367520
+LW A0, 0(T9)
+LW A1, 4(T9)
+LW A2, 8(T9)
+LW A3, 0xC(T9)
+LW T6, 0x10(T9)
+
+LB T0, 2(A2) ;loads flag memes into T0
+ANDI T1, T0, 0b10 ;isolates specific flag
+BNEZ T1, Main ;checks if flag is 0
+NOP
+
+LA T2, 0x8033B249 ;loads level ID
+LB T2, 0(T2)
+ADDIU T4, R0, 27
+BNE T2, T4, Main ;checks if level ID is CD/slide
+NOP
+
+LA T2, 0x8033B24A
+LB T2, 0(T2) ;loads area ID
+ADDIU T4, R0, 3 ;checks if area ID is 3
+BNE T2, T4, Main
+NOP
+
+ADDIU T6, R0, 1 ;sets flag to 1 and saves something in T6 for later
+ANDI T0, T0, 0b10
+
+Main:
+LA T8, 0x8032DDF4
+LH T8, 0(T8)
+ADDIU T9, R0, 1
+BNE T8, T9, NotFileA
+
+LA T5, 0x80207708
+LB T7, 0(T5)
+ANDI T7, T7, 0x20 ;checks if OW star 6 is collected
+BEQZ T7, Out
+NOP
+
+NotFileA:
+ADDIU T9, R0, 2
+BNE T8, T9, NotFileB
+
+LA T5, 0x80207778
+LB T7, 0(T5)
+ANDI T7, T7, 0x20 ;checks if OW star 6 is collected
+BEQZ T7, Out
+NOP
+
+NotFileB:
+ADDIU T9, R0, 3
+BNE T8, T9, NotFileC
+
+LA T5, 0x802077E8
+LB T7, 0(T5)
+ANDI T7, T7, 0x20 ;checks if OW star 6 is collected
+BEQZ T7, Out
+NOP
+
+NotFileC:
+LA T5, 0x80207858
+LB T7, 0(T5)
+ANDI T7, T7, 0x20 ;checks if OW star 6 is collected
+BEQZ T7, Out
+NOP
+
+ANDI T0, T0, 0b11111101
+
+Out:
+SW T0, 2(A2) ;stores flag memes into ram
+JAL 0x803247D0 ;stores flag memes into eeprom
+NOP
+
+;----------------------------------------------------------------------------------------------------------------------------------------------;
+
+ADDIU A1, R0, 0x6 ;A1 = eeprom address/8
+LA A2, 0x80367508 ;loads timer value from eeprom into 0x120F770
+LA T9, 0x80367520
+SW A0, 0(T9)
+SW A1, 4(T9)
+SW A2, 8(T9)
+SW A3, 0xC(T9)
+SW T6, 0x10(T9)
+JAL 0x80324690 ;loads value from EEPROM
+NOP
+LA T9, 0x80367520
+LW A0, 0(T9)
+LW A1, 4(T9)
+LW A2, 8(T9)
+LW A3, 0xC(T9)
+LW T6, 0x10(T9)
+
+LA T0, 0x8032D5D4 ;loads global timer into T1
+LW T1, 0(T0)
+
+LW T3, 4(A2)
+
+BNE T1, R0, Game ;checks if the game has just started
+NOP
+
+ADDIU T3, R0, 0 ;sets timer value to 0
+B Done
+NOP
+
+Game:
+BEQ T1, T3, Done
+NOP
+
+LA T2, 0x8033B170
+LW T2, 0xC(T2)
+ADDIU T4, R0, 0x1300 ;checks if mario action is disappeared between levels
+BEQ T4, T4, StarSelect
+NOP
+
+SW A0, 0(T9)
+SW A1, 4(T9)
+SW A2, 8(T9)
+SW A3, 0xC(T9)
+SW T6, 0x10(T9)
+SW T3, 0x14(T9)
+BEQZ T6, Happy
+NOP
+
+JAL 0x8040F750
+NOP
+B Done
+NOP
+
+Happy:
+
+LUI T0, 0x8034
+ADDIU A0, R0, 0x102
+ADDIU A1, R0, 0xD1
+JAL 0x802D6554
+ADDIU A2, T0, 0x83A0 ;Prints letter S
+B Done
+NOP
+
+StarSelect:
+ADDU T3, T1, R0
+B Done
+NOP
+
+Done:
+LA T9, 0x80367520
+LW A0, 0(T9)
+LW A1, 4(T9)
+LW A2, 8(T9)
+LW A3, 0xC(T9)
+LW T3, 0x14(T9)
+ADDIU T3, T3, 1
+SW T3, 4(A2) ;stores timer value into ram
+JAL 0x803247D0 ;stores timer value into eeprom
+NOP
+
+LW T6, 0x10(T9)
+BEQZ T6, End
+NOP
+LA T0, 0x8033B249 ;loads level ID
+LB T1, 0(T0)
+ADDIU T2, R0, 16
+BNE T1, T2, End ;checks if level ID is OW1
+NOP
+
+LA T0, 0x8033B170
+LW T1, 0x3C(T0)
+LW T2, 0x40(T0)
+LW T3, 0x44(T0)
+LA T0, 0x8033D488
+SW T1, 0xA0(T0)
+SW T2, 0xA4(T0)
+SW T3, 0xA8(T0)
+
+End:
+JR V0
+NOP

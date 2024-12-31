@@ -1,0 +1,240 @@
+.orga 0x21AC88
+.dw 0x00060000
+.dw 0x11010041
+.dw 0x08000000
+.dd 0x0C0000008040F600
+.dw 0x09000000
+
+.orga 0x120F600
+ADDIU SP, SP, 0xFFE8 ;if mario dist to obj < 2000 units, set flag depending on Bparam1, if bparam1=0 remove all
+SW RA, 0x14(SP)
+
+LUI T0, 0x8036
+LW T0, 0x1160(T0)
+LWC1 F8, 0x15C(T0)
+
+ADDIU T1, R0, 2000
+MTC1 T1, F4
+NOP
+CVT.S.W F6, F4
+
+C.EQ.S F6, F8
+BC1F Skip
+NOP
+
+LUI T2, 0x8036
+
+LB T1, 0x188(T0)
+BNEZ T1, one
+NOP
+
+SH R0, 0x7500(T2)
+B Skip
+NOP
+
+one:
+LH T4, 0(T2)
+ADDIU T3, R0, 1
+BNE T1, T3, two
+ADDIU T3, R0, 2
+
+B Save
+ORI T4, T4, 0x1
+
+two:
+BNE T1, T3, three
+ADDIU T3, R0, 3
+
+B Save
+ORI T4, T4, 0x2
+
+three:
+BNE T1, T3, four
+ADDIU T3, R0, 4
+
+B Save
+ORI T4, T4, 0x4
+
+four:
+BNE T1, T3, five
+ADDIU T3, R0, 5
+
+B Save
+ORI T4, T4, 0x8
+
+five:
+BNE T1, T3, six
+ADDIU T3, R0, 6
+
+B Save
+ORI T4, T4, 0x10
+
+six:
+BNE T1, T3, seven
+ADDIU T3, R0, 7
+
+B Save
+ORI T4, T4, 0x20
+
+seven:
+BNE T1, T3, eight
+ADDIU T3, R0, 8
+
+B Save
+ORI T4, T4, 0x40
+
+eight:
+BNE T1, T3, nine
+ADDIU T3, R0, 9
+
+B Save
+ORI T4, T4, 0x80
+
+nine:
+BNE T1, T3, ten
+ADDIU T3, R0, 10
+
+B Save
+ORI T4, T4, 0x100
+
+ten:
+BNE T1, T3, eleven
+ADDIU T3, R0, 11
+
+B Save
+ORI T4, T4, 0x200
+
+eleven:
+BNE T1, T3, twelve
+ADDIU T3, R0, 12
+
+B Save
+ORI T4, T4, 0x400
+
+twelve:
+BNE T1, T3, thirteen
+ADDIU T3, R0, 13
+
+B Save
+ORI T4, T4, 0x800
+
+thirteen:
+BNE T1, T3, fourteen
+ADDIU T3, R0, 14
+
+B Save
+ORI T4, T4, 0x1000
+
+fourteen:
+BNE T1, T3, fifteen
+ADDIU T3, R0, 15
+
+B Save
+ORI T4, T4, 0x2000
+
+fifteen:
+ORI T4, T4, 0x4000
+
+Save:
+SH T4, 0x7500(T2)
+
+Skip:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+
+.orga 0x9E8EC
+JAL 0x8040F700
+NOP
+
+.orga 0x120F700
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI T3, 0x8036
+LH T0, 0x7500(T3)
+
+ANDI A3, T0, 0x1
+ANDI T1, T0, 0x2
+SRL T1, T1, 1
+ADDU A3, T1, A3
+ANDI T1, T0, 0x4
+SRL T1, T1, 2
+ADDU A3, T1, A3
+ANDI T1, T0, 0x8
+SRL T1, T1, 3
+ADDU A3, T1, A3
+ANDI T1, T0, 0x10
+SRL T1, T1, 4
+ADDU A3, T1, A3
+ANDI T1, T0, 0x20
+SRL T1, T1, 5
+ADDU A3, T1, A3
+ANDI T1, T0, 0x40
+SRL T1, T1, 6
+ADDU A3, T1, A3
+ANDI T1, T0, 0x80
+SRL T1, T1, 7
+ADDU A3, T1, A3
+ANDI T1, T0, 0x100
+SRL T1, T1, 8
+ADDU A3, T1, A3
+ANDI T1, T0, 0x200
+SRL T1, T1, 9
+ADDU A3, T1, A3
+ANDI T1, T0, 0x400
+SRL T1, T1, 10
+ADDU A3, T1, A3
+ANDI T1, T0, 0x800
+SRL T1, T1, 11
+ADDU A3, T1, A3
+ANDI T1, T0, 0x1000
+SRL T1, T1, 12
+ADDU A3, T1, A3
+ANDI T1, T0, 0x2000
+SRL T1, T1, 13
+ADDU A3, T1, A3
+ANDI T1, T0, 0x4000
+SRL T1, T1, 14
+ADDU A3, T1, A3
+ANDI T1, T0, 0x8000
+SRL T1, T1, 15
+ADDU A3, T1, A3
+
+SB A3, 0x7504(T3)
+
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+
+.orga 0x97B48 ;(0x802DCB48 RAM)
+JAL 0x8040F500
+
+.orga 0x97C28 ;(0x802DCC28 RAM)
+JAL 0x8040F500
+
+.orga 0x120F4C0
+.asciiz "I 15 SECTIONS COMPLETED"
+
+.orga 0x120F500
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI A3, 0x8036
+LB A3, 0x7504(A3)
+
+LI A2, 0x8040F4C0
+ADDIU A0, R0, 160
+JAL 0x802D66C0
+ADDIU A1, R0, 40
+
+ADDIU A0, R0, 0x110
+ADDIU A1, R0, 0xB4
+JAL 0x802D62D8
+ADDIU A2, T0, 0x83A0
+
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

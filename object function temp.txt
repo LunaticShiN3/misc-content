@@ -1,0 +1,14 @@
+.orga <obj address here>
+.dw 0x00060000
+.dw 0x11014001
+.dw 0x08000000
+.dd 0x0C0000008040XXXX
+.dw 0x09000000
+
+.orga 0x120XXXX
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

@@ -1,0 +1,24 @@
+;warp: 0x8024A700 (dest level, dest area, warp id, 0)
+;render pause courses etc: 0x802DCA88
+
+.orga 0x66B4 ;0x8024B6B4
+JAL 0x80409000
+NOP
+
+.orga 0x1209000
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI T0, 0x8033
+LB T1, 0xAFA3(T0)
+ANDI T2, T1, 1
+BEQZ T2, NoR
+NOP
+
+JAL 0x802DCA88
+NOP
+
+NoR:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

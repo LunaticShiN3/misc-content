@@ -1,0 +1,159 @@
+; this is how you start an object
+.headersize 0x7F200000          ;required for using labels like the "function" thing
+.orga (0x1207000 - 0x120FFFF)   ;orga means where the stuff you write after will be stored in ROM
+.dw 0x00060000                  ;this whole thing is the behavior script
+.dw 0x11010001                  ;you don't need to understand unless you're designing like
+.dw 0x08000000                  ;fancy custom enemies or platforms or idk
+.dw 0x0C000000                  ;just paste this thing and it will work
+.dw function
+.dw 0x09000000
+
+function:
+; code goes here
+
+
+; this is how you start sth that runs every ingame frame always
+.orga 0x9E8EC                    ;replaces stuff in vanilla beta boo key function
+JAL (0x80407000 - 0x80407FFF)
+NOP
+
+.orga (0x1207000 - 0x120FFFF)
+; code goes here
+
+; fixes funny graphical issue from using 9E8EC
+.orga 0xF33A4
+.db 0x20
+
+
+
+
+; N64 registers
+
+; General purpose registers
+; These are 64 bit long but for the most part you just pretend they're 32 bits.
+; R0    --> Hardcoded to store the value 0, needed to account for stuff like no move/load instruction)
+; AT    --> Used for pseudoinstructions and macros, can use it if you know what you're doing
+; V0-V1 --> Function return values (if you call a function, whatever it returns will be stored there)
+; A0-A3 --> Function arguments (equivalent to C functionName(A0, A1, A2, A3) )
+; T0-T9 --> Temporary values (what you use most of the time for operations and stuff)
+; S0-S7 --> Saved values, these persist through function calls (they don't do it automatically,
+;           you do it by storing their values in stack (will explain later), you won't use these much.
+;           Also S3-S7 are unused in SM64 so you can kinda just do whatever with them if you really want to.
+; K0-K1 --> Used by the kernel, I haven't touched these in my life.
+; GP/FP --> Global Pointer and Frame Pointer, unused in SM64
+; SP    --> Stack Pointer, actually important, you wanna take care of it for function calls mostly to preserve RA.
+; RA    --> Return address
+
+; Multiplication and division registers
+; These are also 64 bits long, same as GPR.
+; That's basically HI and LO
+; Multiplication (MULTU) result is stored in LO, if it's bigger than 64 bits the excess will be in HI.
+; Division (DIVU) stores result in LO and remainder / modulo in HI
+; Can't use conventional instructions, use MFHI and MFLO instructions to move things out of these.
+
+; Floating point registers
+; These are 32 bit long but can be used in pair to store 64 bit values. You won't actually need to do that most likely.
+; F0-F31 exist but have different purposes that I don't even know cause I've never used a lot of them.
+; Just use F4, F6, F8 for general float operations.
+; FCSR stores the float condition flags, you can compare 2 registers in different ways and FCSR will
+; keep track of that p much, you won't directly interact with it tho.
+; Floats have their own instruction set.
+
+
+
+; how to return from a function
+JR RA ;jump to register RA
+NOP   ;the instruction after a branch or jump will always run before the branch/jump happens (delay slots)
+
+
+; 2 main ways to make the game do stuff
+; first one is SB/SH/SW which just writes stuff to RAM directly
+; the other one is JAL which you can use to call a vanilla function
+
+
+; example of SB/SH/SW
+; s means store
+; b means byte (8 bit), h means halfword (16 bit), w means word (32 bit),
+; d means doubleword (64 bit <-- you will basically never use 64 bits which is why I don't even mention it most of the time)
+
+; address for HP is 0x8033B21E
+; therefore we wanna SH to that
+; to set hp to max we wanna store 0x0880 (max hp) into 0x8033B21E
+
+.orga 0x9E8EC
+JAL 0x80407000
+NOP
+
+.orga 0x1207000 ;0x120XXXX ROM --> 0x8040XXXX RAM
+
+ADDIU T0, R0, 0x0880 ;add immediate unsigned.
+                     ;Also p much every instruction where you write your own immediate / hardcoded number, that number is 16 bits max)
+                     ;Also p much every instruction that has 3 things like this, you operate the 2nd and 3rd and store result in 1st
+                     ;in this case add R0 + 0x0880, then store result in T0ç
+                     ;therefore this sets T0 to 0x00000880
+
+LUI T1, 0x8034       ;load upper immediate
+                     ;writes a value directly into the upper 16 bits of a register (treated as 32 bit),
+                     ;therefore this sets T1 to 0x80340000
+
+SH T0, 0xB21E(T1)    ;Stores T0 (0x0880) into T1 (0x80340000) + 0xB21E = 0x8033B21E because 0xB21E > 0x7FFF therefore subtract 1 from 8034 because dumb sign stuff.
+
+JR RA
+NOP
+
+
+
+
+; example of JAL
+; JAL means Jump And Link
+; This will store current address into RA, then jump to whatever address you write.
+; Mostly used to call functions.
+; Use a resource like https://hack64.net/wiki/doku.php?id=super_mario_64:function_list or decomp stuff to find vanilla function addresses
+
+; Address for print_text_centered is 0x802D6554
+; function declaration in C is void print_text_centered(s32 x, s32 y, const char *str);
+
+.orga 0x9E8EC
+JAL 0x80407800 ;different from the previous function so it doesn't conflict, you can memory view or use HxD to see if there's enough space in a certain area.
+NOP
+
+.headersize 0x7F200000
+.orga 0x1207800
+ADDIU SP, SP, -0x18  ;get space from the stack to store RA
+SW RA, 0x14(SP)      ;store RA into the stack to preserve it since JAL will overwrite it
+
+LI A2, text          ;LI is a pseudoinstruction that translates into LUI + ADDIU, you can use it with a label like that to write addresses or just with
+                     ;a number if you don't feel like accounting for the dumb >0x7FFF addition thing
+ADDIU A0, R0, 16
+JAL 0x802D6554
+ADDIU A1, R0, 16     ;the instruction after a jump or branch will always run before the game actually jumps anywhere, therefore you can put the last instruction
+                     ;after the JAL, this is called a delay slot.
+
+LW RA, 0x14(SP)      ;load word, it works like SW but read instead of write
+                     ;gets RA back from the stack
+JR RA
+ADDIU SP, SP, 0x18   ;return the space you got from the stack
+
+
+text:
+.asciiz "HELLO WORLD" ;this will store "HELLO WORLD" in the ROM as a 0 terminated string in ASCII encoding
+
+
+;OK SO FOR YOUR LIKE CROUCHING THING.
+.orga 0x1207000
+.dw 0x00060000
+.dw 0x11010001
+.dw 0x08000000
+.dw 0x0C000000
+.dw function
+.dw 0x09000000
+
+function:
+
+
+
+SW 
+
+JR RA
+NOP
+

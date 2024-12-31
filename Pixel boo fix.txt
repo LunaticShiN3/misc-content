@@ -1,0 +1,33 @@
+.orga 0x120F600
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI FP, 0x8036
+LI A0, 0x13002790 ;big boo segmented address here
+JAL 0x8029F95C
+NOP
+BEQZ V0, Something
+NOP
+LW T1, 0x1AC(V0) ;boo kill count
+
+LB T2, 0x7500(FP)
+BLE T2, T1, The
+NOP
+
+SW T2, 0x1AC(V0) ;boo kill count
+B Pixel
+NOP
+
+The:
+SB T1, 0x7500(FP)
+B Pixel
+NOP
+
+Something:
+SB R0, 0x7500(FP)
+
+Pixel:
+LUI FP, 0
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

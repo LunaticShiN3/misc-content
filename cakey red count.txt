@@ -1,0 +1,37 @@
+.orga (decide if level specific or global)
+JAL 0x8040F600 (reminder of empty space and checking the rom)
+NOP (reminder of NOP after JAL)
+
+.orga 0x120F600 (same as JAL)
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LA T0, (red coin counter address, check in STROOP)
+LX T1, 0(T0) (reminder of data lengths)
+
+otherwise:
+LUI T0, firsth
+LX T1, secondh(T0)
+
+LA T0, 0x803613FE
+LB T1, 0(T0)
+
+red coins left to collect = 8+28
+red coins collected = total reds - left to collect
+
+-28
+
+fix negative coin count memes
+
+maybe add a total coin count?
+
+ADDIU A0, R0, XPos
+ADDIU A1, R0, YPos
+LI A2, 0x8033839C (explain functions and arguments)
+ADDU A3, T1, R0
+JAL 0x802D62D8
+NOP
+
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

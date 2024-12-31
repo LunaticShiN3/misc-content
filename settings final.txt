@@ -1,0 +1,51 @@
+.orga 0x21F480 ;behavior ID 0x13005680
+.dw 0x00060000
+.dw 0x11010001
+.dd 0x0C00000080408000
+.dw 0x0A000000
+
+.orga 0x1208000
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+JAL 0x8027A16C
+NOP
+
+LUI T0, 0x8036
+LW T0, 0x1160(T0)
+LW T0, 0x68(T0)
+
+LB T1, 0x18A(T0)
+ADDIU T2, R0, 1 ;eeprom flag to change
+SLLV T2, T2, T1
+
+LB T1, 0x188(T0)
+BEQZ T1, Disable
+NOP
+
+OR A0, V0, T2
+B End
+
+Disable:
+LI T3, 0xFFFFFFFF
+XOR T2, T2, T3
+AND A0, V0, T2
+
+End:
+LUI T6, 0x8033
+LH T6, 0xDDF4(T6)
+LUI T8, 0x8020
+ADDIU T8, T8, 0x7700
+SLL T7, T6, 3
+SUBU T7, T7, T6
+SLL T7, T7, 4
+ADDU T9, T7, T8 ;copy of vanilla set flags function that allows removing flags
+ORI T1, A0, 1
+SW T1, 0xFF98(T9)
+ADDIU T3, R0, 1
+LUI AT, 0x8034
+SB T3, 0xB4A6(AT)
+
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

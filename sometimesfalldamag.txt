@@ -1,0 +1,242 @@
+;Remove fall damage tweak
+;25044: 10
+;252F4: 10 00
+;252F7: 18
+;25368: 10
+
+.headersize 0x7F200000
+
+;list of hooks
+.orga 0x24FC0
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+JAL falldmgfunc1
+NOP
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+.orga 0x25224
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+JAL falldmgfunc2
+NOP
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+
+
+.orga 0x120B500
+falldmgfunc1:
+ADDIU SP, SP, -0x20
+SW RA, 0x14(SP)
+SW A0, 0x20(SP)
+LW T6, 0x20(SP)
+LW T7, 0xC(T6)
+SW T7, 0x1C(SP)
+LW T8, 0x1C(SP)
+LUI AT, 0x2
+AND T9, T8, AT
+BNEZ T9, branch25078
+NOP
+LUI AT, 0x1080
+ORI AT, AT, 0x08A4
+BEQ T8, AT, branch25078
+NOP
+LUI AT, 0x1088
+ORI AT, AT, 0x0899
+BEQ T8, AT, branch25078
+NOP
+LW T0, 0x0020(SP)
+LUI AT, 0x4
+LW T1, 0x4(T0)
+AND T2, T1, AT
+BNEZ T2, branch25078
+NOP
+LW T3, 0x20(SP)
+LUI AT, 0x8033
+LWC1 F10, 0x6C00(AT)
+LWC1 F4, 0xBC(T3)
+LWC1 F6, 0x40(T3)
+SUB.S F8, F4, F6
+C.LT.S F10, F8
+NOP
+
+;therefore branch to branch25078 if level id = 36 (dec)
+;using S7 to avoid all possible conflicts with other registers
+;lazy as fuck but should work unless some really weird shit is patched into the rom
+LUI S7, 0x8034
+LB S7, 0xB249(S7)
+ADDIU AT, R0, 36
+BEQ AT, S7, branch25078
+NOP
+
+BC1F branch25078 ;fall damage patch replaces BC1F with B
+NOP
+
+LW T4, 0x20(SP)
+LUI A0, 0x2410
+ORI A0, A0, 0xC081
+LW A1, 0x88(T4)
+JAL 0x8031EB00
+ADDIU A1, A1, 0x54
+LW T5, 0x20(SP)
+LUI AT, 0x4
+LW T6, 0x4(T5)
+OR T7, T6, AT
+SW T7, 0x4(T5)
+branch25078:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x20
+
+
+falldmgfunc2:
+ADDIU SP, SP, -0x30
+SW RA, 0x1C(SP)
+SW A0, 0x30(SP) ;weird ass vanilla shit
+SW A1, 0x34(SP) ;what the fuck
+SW S0, 0x18(SP)
+LW T6, 0x30(SP) ;go off oomfie??
+LWC1 F4, 0xBC(T6)
+LWC1 F6, 0x40(T6)
+SUB.S F8, F4, F6
+SWC1 F8, 0x2C(SP)
+LW T7, 0x30(SP) ;ok
+LUI AT, 0x80
+ORI AT, AT, 0x08A9
+LHU T8, 0x18(T7)
+BNE T8, AT, branch25274
+NOP
+LUI AT, 0x4416
+MTC1 AT, F10
+B branch25280
+SWC1 F10, 0x28(SP)
+branch25274:
+LUI AT, 0x8033
+LWC1 F16, 0x6C04(AT)
+SWC1 F16, 0x28(SP)
+branch25280:
+LW T9, 0x30(SP)
+LUI AT, 0x1080
+ORI AT, AT, 0x08A4
+LW T0, 0xC(T9)
+BEQ T0, AT, branch253DC
+NOP
+LW T1, 0x68(T9)
+ADDIU AT, R0, 1
+LH T2, 0(T1)
+BEQ T2, AT, branch253DC
+NOP
+LW T3, 0x30(SP)
+LUI AT, 0xC25C
+MTC1 AT, F4
+LWC1 F18, 0x4C(T3)
+C.LT.S F18, F4
+NOP
+BC1F branch253DC
+NOP
+LUI AT, 0x8033
+LWC1 F8, 0x6C08(AT)
+LWC1 F6, 0x2C(SP)
+C.LT.S F8, F6
+NOP
+BC1F branch25358
+NOP
+LW T4, 0x30(SP)
+LW T5, 0x4(T4)
+ANDI T6, T5, 0x10
+
+;therefore branch to branch25358 if level id = 36 (dec)
+;using S7 to avoid all possible conflicts with other registers
+;lazy as fuck but should work unless some really weird shit is patched into the rom
+LUI S7, 0x8034
+LB S7, 0xB249(S7)
+ADDIU AT, R0, 36
+BEQ AT, S7, branch25358
+NOP
+
+BEQZ T6, branch25304 ;fall damage patch replaces this line with B branch25358
+NOP
+
+B branch25308
+ADDIU S0, R0, 0x10
+branch25304:
+ADDIU S0, R0, 0x18
+branch25308:
+LW T7, 0x30(SP)
+LBU T8, 0xB2(T7)
+ADDU T0, T8, S0
+SB T0, 0xB2(T7)
+JAL 0x8027F590
+ADDIU A0, R0, 9
+LW T9, 0x30(SP)
+LUI A0, 0x240A
+ORI A0, A0, 0xFF81
+LW A1, 0x88(T9)
+JAL 0x8031EB00
+ADDIU A1, A1, 0x54
+LW A0, 0x30(SP)
+LW A1, 0x34(SP)
+JAL 0x80253178
+ADDIU A2, R0, 4
+B branch253EC
+NOP
+B branch253DC
+NOP
+branch25358:
+LWC1 F10, 0x2C(SP)
+LWC1 F16, 0x28(SP)
+C.LT.S F16, F10
+NOP
+
+;therefore branch to branch25078 if level id = 36 (dec)
+;using S7 to avoid all possible conflicts with other registers
+;lazy as fuck but should work unless some really weird shit is patched into the rom
+LUI S7, 0x8034
+LB S7, 0xB249(S7)
+ADDIU AT, R0, 36
+BEQ AT, S7, branch253DC
+NOP
+
+BC1F branch253DC ;fall damage patch replaces BC1F with B
+NOP
+
+JAL 0x80251BD4
+LW A0, 0x30(SP)
+BNEZ V0, branch253DC
+NOP
+LW T1, 0x30(SP)
+LW T2, 0x4(T1)
+ANDI T3, T2, 0x10
+BEQZ T3, branch2539C
+NOP
+B branch253A0
+ADDIU S0, R0, 0x8
+branch2539C:
+ADDIU S0, R0, 0xC
+branch253A0:
+LW T4, 0x30(SP)
+LBU T5, 0xB2(T4)
+ADDU T6, T5, S0
+SB T6, 0xB2(T4)
+LW T0, 0x30(SP)
+ADDIU T8, R0, 0x1E
+SB T8, 0xB4(T0)
+JAL 0x8027F590
+ADDIU A0, R0, 9
+LW T7, 0x30(SP)
+LUI A0, 0x240A
+ORI A0, A0, 0xFF81
+LW A1, 0x88(T7)
+JAL 0x8031EB00
+ADDIU A1, A1, 0x54
+branch253DC:
+B branch253EC
+OR V0, R0, R0
+branch253EC:
+LW RA, 0x1C(SP)
+LW S0, 0x18(SP)
+JR RA
+ADDIU SP, SP, 0x30

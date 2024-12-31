@@ -1,0 +1,23 @@
+0x200 (1 << 9) - Savestate check
+0 = ON          1 = OFF
+
+0x400 (1<<10) - Scrolling textures
+0 = ON          1 = OFF
+
+0x800 (1<<11) - Speedrun mode
+1 = ON          0 = OFF
+
+0x1000 (1<<12) - Mario cam only
+1 = ON          0 = OFF
+
+0x2000 (1<<13) - Music
+0 = ON          1 = OFF
+
+0x4000 (1<<14) - Buffed wallkicks
+1 = ON          0 = OFF
+
+0x8000 (1<<15) - HP drain
+1 = ON          0 = OFF
+
+0x100000 (1<<20) - Golden mode
+1 = ON          0 = OFF

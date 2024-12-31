@@ -1,0 +1,38 @@
+.orga 0x120F600
+.dw 0x00060000
+.dw 0x11010001
+.dw 0x08000000
+.dd 0x0C0000008040F618
+.dw 0x09000000
+
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI T0, 0x8036
+LW T1, 0x1160(T0)
+LB T1, 0x188(T0)
+BNEZ T1, Something
+
+LB T1, 0x13FE(T0)
+
+LB T2, 0x777C(T0)
+BLE T2, T1, The
+NOP
+
+SW T2, 0x13FE(T0) ;boo kill count
+B Pixel
+NOP
+
+The:
+SB T1, 0x777C(T0)
+B Pixel
+NOP
+
+Something:
+SB R0, 0x777C(T0)
+
+Pixel:
+LUI FP, 0
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

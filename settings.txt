@@ -1,0 +1,314 @@
+.orga 0x21F480 ;behavior ID 0x13005680
+.dw 0x00060000
+.dw 0x11010001
+.dd 0x0C00000080408000
+.dw 0x0A000000
+
+.orga 0x1208000
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+JAL 0x8027A16C
+NOP
+
+LUI T0, 0x8036
+LW T0, 0x1160(T0)
+LW T0, 0x68(T0)
+
+LB T1, 0x18A(T0)
+ADDIU T2, R0, 1 ;eeprom flag to change
+SLLV T2, T2, T1
+
+
+
+OR T2, T2, V0
+
+
+
+
+LB T1, 0x188(T0)
+BNEZ T1, Disable
+NOP
+
+LB T0, 0x18A(T0)
+BNEZ T0, SavestateCheckOn
+ADDIU T1, R0, 1
+
+LUI T2, 0x8040
+LUI T3, 0x0C00
+SW T3, 0x170C(T2) ;sets scrolling textures function
+LI T3, 0x80401718
+SW T3, 0x1710(T2)
+B End
+NOP
+
+SavestateCheckOn:
+BNE T0, T1, RedCoinCountOn
+ADDIU T1, R0, 2
+
+LUI T2, 0x8041
+SW R0, 0xE008(T2) ;NOPs a branch to skip the savestate check function
+LUI T2, 0x8040
+ADDIU T3, R0, 0x5210 ;makes star counter yellow
+SH T3, 0x6B12(T2)
+B End
+NOP
+
+RedCoinCountOn:
+BNE T0, T1, AccurateHPOn
+ADDIU T1, R0, 3
+
+LUI T2, 0x8040
+LI T3, 0x0C0B58B6
+SW T3, 0x6C74(T2)
+LI T3, 0x0C0B5955 ;adds the 3 JALs that print stuff for red counter
+SW T3, 0x6C88(T2)
+SW T3, 0x6C9C(T2)
+B End
+NOP
+
+AccurateHPOn:
+BNE T0, T1, WidescreenOn
+ADDIU T1, R0, 4
+
+LUI T2, 0x8040
+LI T3, 0x0C0B58B6 ;adds the JAL that prints accurate HP count
+SW T3, 0x6BF4
+B End
+NOP
+
+WidescreenOn:
+BNE T0, T1, MusicOn
+ADDIU T1, R0, 5
+
+LUI T2, 0x802E
+ADDIU T3, R0, 0x14A ;camera icons
+SH T3, 0x3B5A(T2)
+ADDIU T3, R0, -42 ;coin icon
+SH T3, 0x37B8(T2)
+ADDIU T3, R0, -26 ;coin x
+SH T3, 0x37CC(T2)
+ADDIU T3, R0, -10 ;coin count
+SH T3, 0x37E8(T2)
+LUI T2, 0x8040
+ADDIU T3, R0, -42 ;red coin icon
+SH T3, 0x6C9C(T2)
+ADDIU T3, R0, -26 ;red coin x
+SH T3, 0x6C82(T2)
+ADDIU T3, R0, -10 ;red coin count
+SH T3, 0x6C66(T2)
+ADDIU T3, R0, 0x132 ;star icon
+SH T3, 0x6B06(T2)
+ADDIU T3, R0, 0x142 ;star x
+SH T3, 0x6B1B(T2)
+ADDIU T3, R0, 0x150 ;star count
+SH T3, 0x6B32(T2)
+ADDIU T3, R0, -0x28 ;hplow100
+SH T3, 0x6BC6(T2)
+ADDIU T3, R0, -0x22 ;hplow10
+SH T3, 0x6BE2(T2)
+ADDIU T3, R0, -0x1C ;hplow1
+SH T3, 0x6BEE(T2)
+LUI T0, 0x8041
+ADDIU T3, R0, 0x132 ;savestate icon
+SH T3, 0xE0F6
+LUI T2, 0x8041
+SW R0, 0xE188(T2)
+B End
+NOP
+
+MusicOn:
+BNE T0, T1, BuffedWallkicksOn
+ADDIU T1, R0, 6
+
+LUI T2, 0x8032
+LI T3, 0x304500FF
+SW T3, 0xD3F4(T2)
+B End
+NOP
+
+BuffedWallkicksOn:
+BNE T0, T1, HPDrainOn
+ADDIU T1, R0, 7
+
+LUI T2, 0x8027
+ADDIU T3, T3, 2
+SB T3, 0xDA53(T2)
+SB T3, 0xDABB(T2)
+B End
+NOP
+
+HPDrainOn:
+BNE T0, T1, GoldenOn
+ADDIU T1, R0, 8
+
+LUI T2, 0x8041
+SW R0, 0xE174(T2)
+B End
+NOP
+
+GoldenOn:
+BNE T0, T1, NoHealOn
+
+LUI T2, 0x8041
+SW R0, 0xE13C(T2)
+B End
+NOP
+
+NoHealOn:
+
+LUI T0, 0x8025
+SW R0, 0x4180(T0)
+SW R0, 0x41D8(T0)
+SH R0, 0x41AB(T0)
+ADDIU T1, R0, 0x8F
+SB T1, 0x41AC(T0)
+B End
+NOP
+
+
+
+Disable:
+LB T0, 0x18A(T0)
+BNEZ T0, SavestateCheckOff
+ADDIU T1, R0, 1
+
+LUI T2, 0x8040
+LUI T3, 0x1800
+SW T3, 0x170C(T2) ;sets scrolling textures function
+SW T3, 0x1710(T2)
+B End
+NOP
+
+SavestateCheckOff:
+BNE T0, T1, RedCoinCountOff
+ADDIU T1, R0, 2
+
+LUI T2, 0x8041
+LI T3, 0x1000004C
+SW T3, 0xE008(T2) ;NOPs a branch to skip the savestate check function
+LUI T2, 0x8040
+ADDIU T3, R0, 0x5212 ;makes star counter yellow
+SH T3, 0x6B12(T2)
+B End
+NOP
+
+RedCoinCountOff:
+BNE T0, T1, AccurateHPOff
+ADDIU T1, R0, 3
+
+LUI T2, 0x8040
+SW R0, 0x6C74(T2)
+SW R0, 0x6C88(T2)
+SW R0, 0x6C9C(T2)
+B End
+NOP
+
+AccurateHPOff:
+BNE T0, T1, WidescreenOff
+ADDIU T1, R0, 4
+
+LUI T2, 0x8040
+SW R0, 0x6BF4
+B End
+NOP
+
+WidescreenOff:
+BNE T0, T1, MusicOff
+ADDIU T1, R0, 5
+
+LUI T2, 0x802E
+ADDIU T3, R0, 0x10A ;camera icons
+SH T3, 0x3B5A(T2)
+ADDIU T3, R0, 22 ;coin icon
+SH T3, 0x37B8(T2)
+ADDIU T3, R0, 38 ;coin x
+SH T3, 0x37CC(T2)
+ADDIU T3, R0, 54 ;coin count
+SH T3, 0x37E8(T2)
+LUI T2, 0x8040
+ADDIU T3, R0, 22 ;red coin icon
+SH T3, 0x6C9C(T2)
+ADDIU T3, R0, 38 ;red coin x
+SH T3, 0x6C82(T2)
+ADDIU T3, R0, 54 ;red coin count
+SH T3, 0x6C66(T2)
+ADDIU T3, R0, 0xF2 ;star icon
+SH T3, 0x6B06(T2)
+ADDIU T3, R0, 0x102 ;star x
+SH T3, 0x6B1B(T2)
+ADDIU T3, R0, 0x110 ;star count
+SH T3, 0x6B32(T2)
+ADDIU T3, R0, 0x18 ;hplow100
+SH T3, 0x6BC6(T2)
+ADDIU T3, R0, 0x1E ;hplow10
+SH T3, 0x6BE2(T2)
+ADDIU T3, R0, 0x24 ;hplow1
+SH T3, 0x6BEE(T2)
+LUI T0, 0x8041
+ADDIU T3, R0, 0xF2 ;savestate icon
+SH T3, 0xE0F6
+LUI T2, 0x8041
+LI T3, 0x10000003
+SW T3, 0xE188(T2)
+B End
+NOP
+
+MusicOff:
+BNE T0, T1, BuffedWallkicksOff
+ADDIU T1, R0, 6
+
+LUI T2, 0x8032
+LI T3, 0x24050000
+SW T3, 0xD3F4(T2)
+B End
+NOP
+
+BuffedWallkicksOff:
+BNE T0, T1, HPDrainOff
+ADDIU T1, R0, 7
+
+LUI T2, 0x8027
+ADDIU T3, T3, 5
+SB T3, 0xDA53(T2)
+SB T3, 0xDABB(T2)
+B End
+NOP
+
+HPDrainOff:
+BNE T0, T1, GoldenOff
+ADDIU T1, R0, 8
+
+LUI T2, 0x8041
+LI T3, 0x10000005
+SW T3, 0xE174(T2)
+B End
+NOP
+
+GoldenOff:
+BNE T0, T1, NoHealOff
+
+LUI T2, 0x8041
+LI T3, 0x1000000C
+SW T3, 0xE13C(T2)
+B End
+NOP
+
+NoHealOff:
+
+LUI T0, 0x8025
+LI T3, 0xA5F900AE
+SW T3, 0x4180(T0)
+LI T3, 0xA70F00AE
+SW T3, 0x41D8(T0)
+ADDIU T3, R0, 0x018F
+SH T3, 0x41AB(T0)
+ADDIU T1, R0, 0x8F
+SB T1, 0x41AC(T0)
+B End
+NOP
+
+End:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

@@ -1,0 +1,105 @@
+;OBJECT THAT GIVES THING TO PLAYER
+.orga 0x21ACAC ;replaces peach at end behav (0x13000EAC)
+.dw 0x00060000
+.dw 0x11014001
+.dw 0x08000000
+.dd 0x0C0000008040F600 ;replace this by actual address when I can see the rom
+.dw 0x09000000
+
+.orga 0x120F600
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LA T0, 0x8033DDF4
+LA T4, 0x80367508 ;saves the value to use in A1 later
+LH T1, 0(T0)
+
+ADDIU T2, R0, 1
+BNE T1, T2, NotFileA
+NOP
+ADDIU T3, R0, 0x1
+SB T3, 0(T4)
+
+NotFileA:
+ADDIU T2, R0, 1
+BNE T1, T2, NotFileB
+NOP
+ADDIU T3, R0, 0xF
+SB T3, 0(T4)
+
+NotFileB:
+ADDIU T2, R0, 1
+BNE T1, T2, NotFileC
+NOP
+ADDIU T3, R0, 0x1D
+SB T3, 0(T4)
+
+NotFileC:
+ADDIU T3, R0, 0x2B
+SB T3, 0(T4)
+
+LA A0, 0x8033AF78
+LW A1, 0(T4)
+LA A2, 0x80367500 ;stores flags from eeprom into ram
+ADDIU A3, R0, 0x8
+JAL 0x80324690
+NOP
+
+LA T0, 0x80361160
+LB T1, 0x18A(T1)
+ADDIU T2, R0, 1
+BEQ T1, T2, CheckFlag ;checks BParam3
+NOP
+ADDIU T2, R0, 2
+BEQ T1, T2, CheckKey
+NOP
+
+LA T0, 0x80367500
+LB T1, 2(T0)
+ORI T1, T1, 0b10 ;sets interestinmg flag to 1
+SB T1, 2(T0)
+
+LA A0, 0x8033AF78
+LW A1, 0(T4)
+LA A2, 0x80367500 ;stores flafs from ram into eeprom
+ADDIU A3, R0, 0x8
+JAL 0x803247D0
+NOP
+
+B espuma
+
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------;
+;OBJECT THAT CHECKS FLAG (BPARAM = 1)
+
+CheckFlag:
+LA T0, 0x80367500
+LB T1, 2(T0)
+ANDI T2, T1, 0b10 ;isolates interestinmg flag
+
+BEQZ T2, espuma
+NOP
+
+LA T0, 0x8033B170
+ADDIU T1, T1, 15000
+MTC1 F4, T1
+CVT.S.W F6, F4
+SWC1 F6, 0x40(T0) ;sets mario ypos to 15k
+
+B espuma
+
+;----------------------------------------------------------------------------------------------------------------------;
+;OBJECT THAT CHECKS FOR KEY 1 (BPARAM = 2)
+
+CheckKey:
+LA T0, 0x80367500
+LB T1, 3(T0)
+ANDI T2, T1, 0b00001000
+BNEZ T2, espuma
+NOP
+
+
+
+espuma:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

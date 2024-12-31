@@ -1,0 +1,71 @@
+.orga 0x349DC ;load eeprom function
+ADDIU SP, SP, -0x30
+SW RA, 0x1C(SP)
+
+LUI AT, 0x8034
+SB R0, 0xB4A5(AT) ;set value at 0x8033B4A5 to 0 (false)
+SB R0, 0xB4A6(AT) ;set value at 0x8033B4A6 to 0 (false)
+
+LA A0, 0x80207700
+JAL 0x80324570 ;bzero function
+ADDIU A1, R0, 0x200
+
+LA A0, 0x80207700
+JAL 0x80279174 ;copy eeprom to 0x80207700
+ADDIU A1, R0, 0x200
+
+LW RA, 0x1C(SP)
+JR RA
+ADDIU SP, SP, 0x30
+
+;----------------------------------------------------------------------------------------------------------------------------------------------;
+
+.orga 0x34840
+ADDIU SP, SP, -0x18
+SW RA, 0x14(SP)
+SW A0, 0x18 (SP)
+
+LB T6, 0x8033B4A6 ;0x8033B4A6 = gSaveFileModified (boolean)
+BEQZ T6, skipfilesave ;branch to end if gSaveFileModified is FALSE
+NOP
+
+LW T4, 0x18(SP)
+LA T6, 0x80207700
+SLL T5, T4, 3
+SUBU T5, T5, T4
+SLL T5, T5, 4
+ADDU A0, T5, T6 ;A0 = buffer pointer to write
+JAL 0x80279218 ;call write_eeprom_data(buffer, size), tries to write to eeprom 4 times before giving up.
+ADDIU A1, R0, 0x70 ;A1 = size of buffer
+
+SB R0, 0x8034B4A6 ;set gSaveFileModified to FALSE
+
+skipfilesave:
+JAL 0x802794A0 ;call save_main_menu_data() function
+NOP
+
+LW RA, 0x14(SP) ;end of function
+JR RA
+ADDIU SP, SP, 0x18
+
+;----------------------------------------------------------------------------------------------------------------------------------------------;
+
+.orga 0x344A0 ;savemenudata function
+ADDIU SP, SP, -0x18
+SW RA, 0x14(SP)
+
+LA T6, 0x8033B4A5 ;0x8033B4A5 = gMainMenuDataModified (boolean)
+BEQZ T6, skipmenusave ;branch to end if gMainMenuDataModified is FALSE
+NOP
+
+LA A0, 0x80207700
+ADDIU A0, A0, 0x1C0 ;A0 = buffer pointer to write
+JAL 0x80279218 ;call write_eeprom_data(buffer, size), tries to write to eeprom 4 times before giving up.
+ADDIU A1, R0, 0x40 ;A1 = size of buffer
+
+SB R0, 0x8033B4A5 ;set value at 0x8033B4A5 to 0 (false)
+
+skipmenusave:
+LW RA, 0x14(SP) ;end of function
+JR RA
+ADDIU SP, SP, 0x18

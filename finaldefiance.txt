@@ -1,0 +1,51 @@
+.orga 0x120D050
+.dw 0x00090000
+.dw 0x11010001
+.dd 0x2A00000001010101
+.dw 0x08000000
+.dd 0x0C0000008040D070
+.dw 0x09000000
+
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI T0, 0x8036
+LW T0, 0x1160(T0)
+LW A0, 0x154(T0)
+
+LB A1, 0x188(T0) ;Bparam1 = tpb (time per block state)
+LB A2, 0x189(T0) ;Bparam2 = amount (amount of blocks in cycle)
+LB A3, 0x18A(T0) ;Bparam3 = reqstate (block id)
+MULTU A1, A2 ;tpb * amount = tpc (time per cycle)
+MFLO T1
+DIVU A0, T1 ;timer mod tpc = reltime
+MFHI T1
+MULTU A1, A3 ;tpb * reqstate = maxrange
+MFLO T2
+ADDIU T3, A3, -1
+MULTU A1, T3 ;tpb * (reqstate-1) = minrange
+MFLO T3
+SLT T4, T3, T1
+SLT T5, T1, T2 ;if minrange < reltime and reltime < maxrange
+AND T4, T4, T5
+BEQZ T4, Disable
+NOP
+
+
+LB T1, 0x3(T0)
+ANDI T1, T1, 0b11101111
+SB T1, 0x3(T0)
+JAL 0x803839CC
+NOP
+B End
+NOP
+
+Disable:
+LB T1, 0x3(T0)
+ORI T1, T1, 0x10
+SB T1, 0x3(T0)
+
+End:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

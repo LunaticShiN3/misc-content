@@ -1,0 +1,4 @@
+.orga 0xF00C2
+.dh 0x020D ;reverts RCVI hack
+.orga 0xD48B6
+.dh 0x805C ;fixes trying to load soundbank over framebuffer in ram

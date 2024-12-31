@@ -1,0 +1,43 @@
+.orga 0x316C
+.f_DmaCopy 0x80367530, 0x7CC6C0, 0x7DD890
+
+;# https://github.com/aglab2/sm64asm/blob/master/yama/asm/guest_select.asm
+
+; level name 
+; T3 = course name
+.orga 0x227658 ;# 0x80177198, part of print_act_selector_strings() which is called in a geo function geo_act_selector_strings()
+               ;# replaces a call to segmented_to_virtual() which normally retrieves the currLevelName:
+               ;# u8 *currLevelName = segmented_to_virtual(levelNameTbl[COURSE_NUM_TO_INDEX(gCurrCourseNum)]);
+  jal 0x80404a80
+  
+.orga 0x967C4
+JAL 0x80277F50
+
+.orga 0x969C8
+JAL 0x80404A80
+
+.orga 0x96A40
+JAL 0x80277F50
+
+
+.orga 0x1204a80
+  SUBIU SP, SP, 0x18
+  SW RA, 0x14(SP)
+
+  LI V0, 0x80367530
+  LB T1, 0x8033BAC7
+  ADDIU T1, T1, -1
+  SLL T1, T1, 4
+  ADDIU T2, R0, 2
+  DIVU T1, T2
+  MFLO T1
+  LB AT, 0x8033B24A  ;# sWarpDest->areaIdx
+  ADDU T1, T1, AT
+  ADDIU T2, R0, 0x20
+  MULTU T1, T2
+  MFLO T1
+  ADDU V0, V0, T1    ;# adding the area to the pointer offset
+
+  LW RA, 0x14(SP)
+  JR RA
+  ADDIU SP, SP, 0x18

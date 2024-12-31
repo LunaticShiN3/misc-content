@@ -1,0 +1,52 @@
+.headersize 0x7F200000
+.orga 0x120A000
+.dw 0x00060000
+.dw 0x11010001
+.dw 0x08000000
+.dw 0x0C000000
+.dw function
+.dw 0x09000000
+
+function:
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LI A0, 0x1300472C
+LI A1, 0x80367780
+JAL 0x8029F9EC ;finds nearest goomba
+NOP
+
+LUI T8, 0x8036
+LW T8, 0x1160(T8)
+LB T9, 0x188(T8)
+BEQZ T9, End
+
+LI T5, 0x7FFFFF
+
+AND T6, V0, T5
+
+LW T7, 0x188(T8)
+AND T7, T7, T5 ;delete bparam1
+BEQZ T7, dontcheck
+NOP
+
+BEQ T6, T7, dontlower
+
+ADDIU T9, T9, -1
+dontcheck:
+SLL T9, T9, 24
+OR T9, T6, T9
+SW T9, 0x188(T8)
+B End
+NOP
+
+dontlower:
+LH T0, 0x18A(V0)
+MTC1 T0, F4
+CVT.S.W F4, F4
+SWC1 F4, 0xA4(V0)
+
+End:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

@@ -1,0 +1,204 @@
+.headersize 0x7F200000
+
+.orga 0x1209080
+.dw 0x00060000
+.dw 0x11010041
+.dw 0x0C000000
+.dw badelinit
+.dw 0x08000000
+.dw 0x0C000000
+.dw badeloop
+.dw 0x09000000
+
+badelinit:
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LUI T0, 0x8036
+SD R0, 0x7790(T0)
+SW R0, 0x7798(T0)
+SD R0, 0x77A0(T0)
+SW R0, 0x77A8(T0)
+SD R0, 0x77B0(T0)
+SW R0, 0x77B8(T0)
+SD R0, 0x77C0(T0)
+SW R0, 0x77C8(T0)
+SD R0, 0x77D0(T0)
+SW R0, 0x77D8(T0)
+SD R0, 0x77E0(T0)
+SW R0, 0x77E8(T0)
+SD R0, 0x77F0(T0)
+SW R0, 0x77F8(T0)
+SD R0, 0x7800(T0)
+SW R0, 0x7808(T0)
+SD R0, 0x7810(T0)
+SW R0, 0x7818(T0)
+SD R0, 0x7820(T0)
+SW R0, 0x7828(T0)
+SD R0, 0x7830(T0)
+SW R0, 0x7838(T0)
+SD R0, 0x7840(T0)
+SW R0, 0x7848(T0)
+SD R0, 0x7850(T0)
+SW R0, 0x7858(T0)
+SD R0, 0x7860(T0)
+SW R0, 0x7868(T0)
+SD R0, 0x7870(T0)
+SW R0, 0x7878(T0)
+SD R0, 0x7880(T0)
+SW R0, 0x7888(T0)
+SD R0, 0x7890(T0)
+SW R0, 0x7898(T0)
+SD R0, 0x78A0(T0)
+SW R0, 0x78A8(T0)
+SD R0, 0x78B0(T0)
+SW R0, 0x78B8(T0)
+
+ADDIU A0, R0, 2    ;Mario_dialogue_look_up
+ADDIU A1, R0, 0    ;Dialog_flag_none
+ADDIU A2, R0, 162  ;cutscene_dialog
+JAL 0x802A4960     ;s32 cur_obj_update_dialog_with_cutscene(s32 actionArg, s32 dialogFlags, s32 cutsceneTable, s32 dialogID);
+ADDIU A3, R0, 150  ;dialog id
+
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
+
+badeloop:
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LI T0, 0x8033B170
+LUI T1, 0x8036
+LW T2, 0x1160(T1)
+
+LB T3, 0x188(T2)
+BNEZ T3, decrease
+NOP
+
+LD T3, 0x7790(T1)
+SD T3, 0xA0(T2) ;delay frame 1 to obj pos
+LW T3, 0x7798(T1)
+SW T3, 0xA8(T2)
+
+LD T3, 0x77A0(T1)
+SD T3, 0x7790(T1) ;delay frame 2 to 1
+LW T3, 0x77A8(T1)
+SW T3, 0x7798(T1)
+
+LD T3, 0x77B0(T1)
+SD T3, 0x77A0(T1) ;delay frame 3 to 2
+LW T3, 0x77B8(T1)
+SW T3, 0x77A8(T1)
+
+LD T3, 0x77C0(T1)
+SD T3, 0x77B0(T1) ;delay frame 4 to 3
+LW T3, 0x77C8(T1)
+SW T3, 0x77B8(T1)
+
+LD T3, 0x77D0(T1)
+SD T3, 0x77C0(T1) ;delay frame 5 to 4
+LW T3, 0x77D8(T1)
+SW T3, 0x77C8(T1)
+
+LD T3, 0x77E0(T1)
+SD T3, 0x77D0(T1) ;delay frame 6 to 5
+LW T3, 0x77E8(T1)
+SW T3, 0x77D8(T1)
+
+LD T3, 0x77E0(T1)
+SD T3, 0x77D0(T1) ;delay frame 7 to 6
+LW T3, 0x77E8(T1)
+SW T3, 0x77D8(T1)
+
+LD T3, 0x77F0(T1)
+SD T3, 0x77E0(T1) ;delay frame 8 to 7
+LW T3, 0x77F8(T1)
+SW T3, 0x77E8(T1)
+
+LD T3, 0x7800(T1)
+SD T3, 0x77F0(T1) ;delay frame 9 to 8
+LW T3, 0x7808(T1)
+SW T3, 0x77F8(T1)
+
+LD T3, 0x7810(T1)
+SD T3, 0x7800(T1) ;delay frame 10 to 9
+LW T3, 0x7818(T1)
+SW T3, 0x7808(T1)
+
+LD T3, 0x7820(T1)
+SD T3, 0x7810(T1) ;delay frame 11 to 10
+LW T3, 0x7828(T1)
+SW T3, 0x7818(T1)
+
+LD T3, 0x7830(T1)
+SD T3, 0x7820(T1) ;delay frame 12 to 11
+LW T3, 0x7838(T1)
+SW T3, 0x7828(T1)
+
+LD T3, 0x7840(T1)
+SD T3, 0x7830(T1) ;delay frame 13 to 12
+LW T3, 0x7848(T1)
+SW T3, 0x7838(T1)
+
+LD T3, 0x7850(T1)
+SD T3, 0x7840(T1) ;delay frame 14 to 13
+LW T3, 0x7858(T1)
+SW T3, 0x7848(T1)
+
+LD T3, 0x7860(T1)
+SD T3, 0x7850(T1) ;delay frame 15 to 14
+LW T3, 0x7868(T1)
+SW T3, 0x7858(T1)
+
+LD T3, 0x7870(T1)
+SD T3, 0x7860(T1) ;delay frame 16 to 15
+LW T3, 0x7878(T1)
+SW T3, 0x7868(T1)
+
+LD T3, 0x7880(T1)
+SD T3, 0x7870(T1) ;delay frame 17 to 16
+LW T3, 0x7888(T1)
+SW T3, 0x7878(T1)
+
+LD T3, 0x7890(T1)
+SD T3, 0x7880(T1) ;delay frame 18 to 17
+LW T3, 0x7898(T1)
+SW T3, 0x7888(T1)
+
+LD T3, 0x78A0(T1)
+SD T3, 0x7890(T1) ;delay frame 19 to 18
+LW T3, 0x78A8(T1)
+SW T3, 0x7898(T1)
+
+LD T3, 0x78B0(T1)
+SD T3, 0x78A0(T1) ;delay frame 20 to 19
+LW T3, 0x78B8(T1)
+SW T3, 0x78A8(T1)
+
+LW T3, 0x3C(T0)
+SW T3, 0x78B0(T1) ;mario to delay frame 10
+LW T3, 0x40(T0)
+SW T3, 0x78B4(T1)
+LW T3, 0x44(T0)
+SW T3, 0x78B8(T1)
+
+ADDIU AT, R0, 100
+MTC1 AT, F6
+CVT.S.W F6, F6
+LWC1 F4, 0x015C(T2)
+C.LT.S F4, F6
+BC1F End
+NOP
+
+SB R0, 0xAE(T0)
+B End
+
+decrease:
+ADDIU T3, T3, -1
+SB T3, 0x188(T2)
+
+End:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18

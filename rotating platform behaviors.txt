@@ -1,0 +1,6 @@
+Junk Sphere - 0x13000174
+Junk Vent - 0x13000E88
+Star - 13000F9C
+TTC pendulum - 0x13004C24
+TTC spinner - 0x13004D90
+TTC cog - 0x13004CCC

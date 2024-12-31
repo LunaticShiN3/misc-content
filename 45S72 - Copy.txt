@@ -1,0 +1,78 @@
+.orga 0x11474
+JAL 0x8040FC00
+NOP
+
+.orga 0x11480
+NOP
+
+.orga 0x120FC00
+
+LUI T0, 0x8034
+LB AT, 0xB24A(T0)
+LB T0, 0xB249(T0)
+SLL AT, AT, 8
+OR T0, AT, T0
+ADDIU T1, R0, 0x0315
+BEQ T0, T1, wk45
+NOP
+
+BNE T6, AT, Branch1
+NOP
+B End
+ADDIU V0, R0, 6
+
+Branch1:
+LH T7, 0x4E(SP)
+SLTI AT, T7, 0xA000
+BNEZ AT, Branch2
+NOP
+
+SLTI AT, T7, 0x6001
+BNEZ AT, Branch4
+NOP
+
+Branch2:
+LW T8, 0x50(SP)
+LUI AT, 0x4000
+LW T9, 4(T8)
+OR T0, T9, AT
+SW T0, 4(T8)
+B End
+ADDIU V0, R0, 2
+Branch4:
+B End
+OR V0, R0, R0
+B End
+NOP
+
+wk45:
+BNE T6, AT, Branch1A
+NOP
+B End
+ADDIU V0, R0, 6
+
+Branch1A:
+LH T7, 0x4E(SP)
+SLTI AT, T7, 0xA100
+BNEZ AT, Branch2A
+NOP
+
+SLTI AT, T7, 0x5F00
+BNEZ AT, Branch4A
+NOP
+
+Branch2A:
+LW T8, 0x50(SP)
+LUI AT, 0x4000
+LW T9, 4(T8)
+OR T0, T9, AT
+SW T0, 4(T8)
+B End
+ADDIU V0, R0, 2
+Branch4A:
+B End
+OR V0, R0, R0
+
+End:
+JR RA
+NOP

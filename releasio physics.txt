@@ -1,0 +1,40 @@
+.orga 0x861C0
+OR V0, R0, RA
+JAL 0x8040F600
+
+.orga 0x120F600
+LA T0, 0x8033B170
+LW T1, 0x54(T0) ;loads mario speed
+MTC1 T1, F4
+NOP
+
+ADDIU T2, R0, 15
+MTC1 T2, F6
+NOP
+CVT.S.W F8, F6 ;checks if mario speed is above 15
+C.LT.S F4, F8
+BC1T NotFast
+NOP
+
+ADDIU T2, R0, 200
+MTC1 T2, F6
+NOP
+CVT.S.W F8, F6 ;sets speed to 200
+SWC1 F8, 0x54(T0)
+
+NotFast:
+LA T1, 0x8033AFF8
+LB T1, 0(T1)
+ANDI T1, T1, 0x60 ;checks if B or Z are pressed
+BEQZ T1, NotBack
+NOP
+
+ADDIU T2, R0, -4000
+MTC1 T2, F6
+NOP
+CVT.S.W F8, F6 ;sets speed to -4000
+SWC1 F8, 0x54(T0)
+
+NotBack:
+JR V0
+NOP

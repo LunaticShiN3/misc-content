@@ -1,0 +1,116 @@
+;# https://github.com/aglab2/sm64asm/blob/master/yama/asm/guest_select.asm
+.orga 0x2275b0 ;# 0x801770F0, part of print_course_number().
+               ;# Replaces a call to print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str) for 2 digit numbers
+  jal 0x80404a00
+
+.orga 0x22757F
+.db 7
+  
+.orga 0x1204a00
+  SUBIU SP, SP, 0x18
+  SW RA, 0x14(SP)
+  
+  LH T3, 0x8033bac6 ;# gCurrCourseNum
+  ADDIU T9, R0, 6
+  BLE T3, T9, maincourse
+  NOP
+  ADDIU T9, R0, 16
+  BLE T3, T9, sidecourse
+  NOP
+  B fini
+  NOP
+
+
+maincourse:
+  LI T0, 1
+  B fini            ;# this code seems to leave main courses untouched
+  SW T0, 0(A3)    ;# A3 is a pointer to the string for the course number text
+
+sidecourse:
+  LI T0, 0x0E       ;# T0 = 0x11 = 17
+  SB T0, 0x0(A3)    ;# store 17 to the first byte of the string? This is the H character
+  LI T0, 0x21       ;# T0 = 0x0F = 15
+  SB T0, 0x1(A3)    ;# store 15 to the second byte of the string, which is F. These characters are shown in place of the course number on act select
+
+fini:
+  JAL 0x2d7b84      ;# print_hud_lut_string()
+  NOP
+  
+  LW RA, 0x14(SP)
+  JR RA
+  ADDIU SP, SP, 0x18
+  
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+
+
+
+; level name 
+; T3 = course name
+.orga 0x227658 ;# 0x80177198, part of print_act_selector_strings() which is called in a geo function geo_act_selector_strings()
+               ;# replaces a call to segmented_to_virtual() which normally retrieves the currLevelName:
+               ;# u8 *currLevelName = segmented_to_virtual(levelNameTbl[COURSE_NUM_TO_INDEX(gCurrCourseNum)]);
+  jal 0x80404a80
+  
+.orga 0x967C4
+JAL 0x80277F50
+
+.orga 0x969C8
+JAL 0x80404A80
+
+.orga 0x96A40
+JAL 0x80277F50
+
+
+.orga 0x1204a80
+  SUBIU SP, SP, 0x18
+  SW RA, 0x14(SP)
+  
+  LB T3, 0x8033B249
+  ADDIU AT, R0, 0x12 ;# T3 = gCurrCourseNum
+  BNE AT, T3, @@nochange ;# if gCurrCourseNum != 22 then just do the vanilla stuff
+  NOP
+  
+  LI V0, 0x8040F000
+  LB T1, 0x8033B24A  ;# sWarpDest->areaIdx
+  ADDIU T1, T1, -1
+  ADDIU T2, R0, 0x18
+  MULTU T1, T2
+  MFLO T1
+  ADDU V0, V0, T1    ;# adding the area to the pointer offset
+  B NoSTV
+  NOP
+  
+@@nochange:
+  JAL 0x277f50 ;# segmented_to_virtual()
+  NOP
+  
+  LB T3, 0x8033B249
+  ADDIU AT, R0, 0x5 ;# T3 = gCurrCourseNum
+  BNE AT, T3, @@nochange1 ;# if gCurrCourseNum != 22 then just do the vanilla stuff
+  NOP
+  
+  LI V0, 0x8040F0A0
+  LB T1, 0x8033B24A  ;# sWarpDest->areaIdx
+  ADDIU T1, T1, -1
+  ADDIU T2, R0, 0x18
+  MULTU T1, T2
+  MFLO T1
+  ADDU V0, V0, T1    ;# adding the area to the pointer offset
+  B NoSTV
+  NOP
+  
+@@nochange1:
+  JAL 0x277f50 ;# segmented_to_virtual()
+  NOP
+  
+NoSTV:
+  LW RA, 0x14(SP)
+  JR RA
+  ADDIU SP, SP, 0x18

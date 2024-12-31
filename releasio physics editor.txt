@@ -1,0 +1,47 @@
+.orga 0x219E00 ;replaces peach at end behav (0x13000EAC)
+.dw 0x00060000
+.dw 0x11014001
+.dw 0x08000000
+.dd 0x0C0000008040F600 ;replace this by actual address when I can see the rom
+.dw 0x09000000
+
+.orga 0x120F600
+ADDIU SP, SP, 0xFFE8
+SW RA, 0x14(SP)
+
+LA T0, 0x8033B170
+LW T1, 0x54(T0) ;loads mario speed
+MTC1 T1, F4
+NOP
+
+ADDIU T2, R0, 15
+MTC1 T2, F6
+NOP
+CVT.S.W F8, F6 ;checks if mario speed is above 15
+C.LT.S F4, F8
+BC1T NotFast
+NOP
+
+ADDIU T2, R0, 200
+MTC1 T2, F6
+NOP
+CVT.S.W F8, F6 ;sets speed to 200
+SWC1 F8, 0x54(T0)
+
+NotFast:
+LA T1, 0x8033AFF8
+LB T1, 0(T1)
+ANDI T1, T1, 0x60 ;checks if B or Z are pressed
+BEQZ T1, NotBack
+NOP
+
+ADDIU T2, R0, -4000
+MTC1 T2, F6
+NOP
+CVT.S.W F8, F6 ;sets speed to -4000
+SWC1 F8, 0x54(T0)
+
+NotBack:
+LW RA, 0x14(SP)
+JR RA
+ADDIU SP, SP, 0x18
